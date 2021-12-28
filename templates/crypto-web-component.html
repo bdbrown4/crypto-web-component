@@ -1,25 +1,16 @@
 <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/css/autoComplete.min.css">
-    <link rel="stylesheet" href="../styles/crypto-web-component.css">
+    <script src="../scripts/autocomplete.js"></script>
+    <script src="https://kraaden.github.io/autocomplete/autocomplete.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://kraaden.github.io/autocomplete/autocomplete.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-          <h1>Crypto Web Component</h1>
-        </header>
-        <div class="body" align="center">
-          <div class="autoComplete_wrapper">
-            <input id="autoComplete" type="text" tabindex="1">
-          </div>
-          <div class="mode">
-            <h4>mode</h4>
-            <div class="toggle">
-              <div class="toggler">Strict</div>
-            </div>
-          </div>
-          <div class="selection"></div>
-        </div>
-      </div>
-    <button id="fetchCryptoValue">Fetch a cryptocurrency</button>
-    <script src="../scripts/autocomplete.js"></script>
+    <select id="cryptocurrency" type="text">
+        <option value=""></option>
+        <option value="BTC">BTC</option>
+        <option value="ETH">ETH</option>
+        <option value="LTC">LTC</option>
+    </select>
+    <button disabled="true" id="fetchCryptoValue">Fetch a cryptocurrency</button>
+    <div id="cryptovalue" hidden="true">
+    </div>
 </body>

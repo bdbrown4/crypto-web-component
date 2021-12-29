@@ -1,7 +1,22 @@
-fetch('../templates/crypto-web-component.html')
-    .then(stream => stream.text())
-    .then(text => define(text));
-
+// const local = '../node_modules/crypto-web-component/templates/crypto-web-component.html';
+// const github = 'https://github.com/bdbrown4/crypto-web-component/blob/main/templates/crypto-web-component.html';
+// this is having issues when installed into another application because of cors
+// fetch(local)
+//     .then(stream => stream.text())
+//     .then(text => define(text));
+const template = `
+<body>
+    <select id="cryptocurrency" type="text">
+        <option value=""></option>
+        <option value="BTC">BTC</option>
+        <option value="ETH">ETH</option>
+        <option value="LTC">LTC</option>
+    </select>
+    <button disabled="true" id="fetchCryptoValue">Fetch a cryptocurrency</button>
+    <div id="cryptovalue" hidden="true">
+    </div>
+</body>`;
+define(template);
 /*  
     Never ever do this in a production scenario where you need to protect your endpoints
     from nurds.
@@ -45,7 +60,6 @@ function define(html) {
             para.innerHTML = 'USD: $'+(Math.round(response.rate * 100) / 100).toLocaleString();
             div.appendChild(para);
             div.hidden = false;
-            console.log(response);
         }
 
         activateButton() {

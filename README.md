@@ -18,7 +18,7 @@ This will be a custom web component that will allow for you to search for a cryp
 <body>
     <h1>Testing out how our web component will render below:</h1>
     <crypto-web-component></crypto-web-component>
-    <script src="../crypto-web-component.js"></script>
+    <script src="node_modules/crypto-web-component/crypto-web-component.js"></script>
 </body>
 </html>
 ```

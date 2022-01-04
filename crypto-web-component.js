@@ -13,6 +13,7 @@ const template = `
     <div id='cryptovalue' hidden='true'>
     </div>
 </body>`;
+const isNode = new Function("try {return this===global;}catch(e){return false;}");
 define(template);
 
 function define(html) {
@@ -22,7 +23,9 @@ function define(html) {
             super();
             this.attachShadow({ mode: 'open' });
             this.shadowRoot.innerHTML = html;
-            this.fetchDataListOptions();
+            if(!isNode()) {
+                this.fetchDataListOptions();
+            }
         }
     
         connectedCallback() {
@@ -43,7 +46,8 @@ function define(html) {
             var uri = 'https://api.exchange.coinbase.com/currencies';
             var response = await fetch(uri, {
                 method: 'GET'
-            }).then(data => data.json());
+            }).then(data => data.json())
+              .catch(err => console.log(err));
 
             var datalist = this.shadowRoot.querySelector('#cryptocurrencies');
 
@@ -60,7 +64,7 @@ function define(html) {
             var response = await fetch(uri, {
                 method: 'GET'
             }).then(data => data.json());
-
+            
             const div = this.shadowRoot.querySelector('#cryptovalue');
             const para = document.createElement('p');
             para.innerHTML = response.message ?
@@ -88,4 +92,9 @@ function define(html) {
     }
     
     window.customElements.define('crypto-web-component', CryptoWebComponent);
+
+    return new CryptoWebComponent();
+}
+if(isNode()) {
+    module.exports.define = define;
 }

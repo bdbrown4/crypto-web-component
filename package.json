@@ -4,7 +4,7 @@
   "description": "This will be a custom web component that will allow for you to search for a crypto currency and fetch it's current USD dollar value.",
   "main": "crypto-web-component.js",
   "scripts": {
-    "test": "npm test"
+    "test": "jest --env=@happy-dom/jest-environment"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,9 @@
     "url": "https://github.com/bdbrown4/crypto-web-component/issues"
   },
   "homepage": "https://github.com/bdbrown4/crypto-web-component#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@happy-dom/jest-environment": "^2.25.1",
+    "jest": "^27.4.5"
+  }
 }

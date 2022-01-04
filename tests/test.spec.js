@@ -1,24 +1,16 @@
-const { define } = require('../crypto-web-component');
+const { CryptoWebComponent } = require('../crypto-web-component');
+
 describe('CryptoWebComponent', () => {
-    let component;
+    const component = new CryptoWebComponent();
     beforeEach(() => {
-        component = define(`
-        <body>
-            <input list='cryptocurrencies' id='cryptocurrency'>
-            <datalist id='cryptocurrencies'>
-            </datalist>
-            <button disabled='true' id='fetchCryptoValue'>Fetch a cryptocurrency</button>
-            <div id='cryptovalue' hidden='true'>
-            </div>
-        </body>`);
+        require('jest-fetch-mock').enableMocks();
     });
     it('should define the component', () => {
         expect(component).toBeTruthy();
     });
-    // come back to this test.... its a false positive
     it('should call fetchCryptoCurrency', async () => {
         component.cryptoCurrency = 'btc';
-
+        fetchMock.dontMock();
         await component.fetchCryptoCurrency();
         const div = component.shadowRoot.querySelector('#cryptovalue');
 
@@ -26,9 +18,11 @@ describe('CryptoWebComponent', () => {
         expect(div.children[0].textContent.includes('$')).toBeTruthy();
     });
     it('should call fetchDataListOptions and that should add options to the datalist', async () => {
+        fetchMock.dontMock();
         await component.fetchDataListOptions();
         const datalist = component.shadowRoot.querySelector('#cryptocurrencies');
         expect(datalist.children[0]).toBeTruthy();
         expect(datalist.firstElementChild.tagName).toBe('OPTION');
     });
+    // write more tests...
 });

@@ -13,11 +13,6 @@ const template = `
     <div id='cryptovalue' hidden='true'>
     </div>
 </body>`;
-/*  
-    Never ever do this in a production scenario where you need to protect your endpoints
-    from nurds.
-*/
-apiKey = '29416EA8-E343-43F4-A5DC-6C360653D6A4';
 define(template);
 
 function define(html) {
@@ -45,39 +40,35 @@ function define(html) {
         }
 
         async fetchDataListOptions() {
-            var uri = 'https://rest.coinapi.io/v1/assets';
+            var uri = 'https://api.exchange.coinbase.com/currencies';
             var response = await fetch(uri, {
-                method: 'GET',
-                headers: {
-                    'X-CoinAPI-Key': apiKey
-                }
+                method: 'GET'
             }).then(data => data.json());
 
             var datalist = this.shadowRoot.querySelector('#cryptocurrencies');
-            console.log(datalist);
 
             response.forEach(crypto => {
                 const option = document.createElement('option');
-                option.value = crypto.asset_id;
-                option.innerText = `${crypto.name} - ${crypto.asset_id}`;
+                option.value = crypto.id;
+                option.innerText = `${crypto.name} - ${crypto.id}`;
                 datalist.appendChild(option);
             });
         }
     
         async fetchCryptoCurrency() {
-            var uri = `https://rest.coinapi.io/v1/exchangerate/${this.cryptoCurrency}/USD`;
+            var uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
             var response = await fetch(uri, {
-                method: 'GET',
-                headers: {
-                    'X-CoinAPI-Key': apiKey
-                }
+                method: 'GET'
             }).then(data => data.json());
 
             const div = this.shadowRoot.querySelector('#cryptovalue');
             const para = document.createElement('p');
-            para.innerHTML = response.error ?
-                `There was an error fetching ${this.cryptoCurrency} from CoinAPI.` :
-                'USD: $'+(Math.round(response.rate * 100) / 100).toLocaleString();
+            para.innerHTML = response.message ?
+                `There was an error fetching ${this.cryptoCurrency} from Coinbase.` :
+                '$' + parseFloat(response.price * 100 / 100).toFixed(2);
+            if (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
             div.appendChild(para);
             div.hidden = false;
         }

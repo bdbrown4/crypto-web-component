@@ -16,17 +16,15 @@ describe('CryptoWebComponent', () => {
         expect(component).toBeTruthy();
     });
     // come back to this test.... its a false positive
-    // it('should call fetchCryptoCurrency', () => {
-    //     const input = component.shadowRoot.querySelector('#cryptocurrency');
-    //     const button = component.shadowRoot.querySelector('#fetchCryptoValue');
-    //     input.value = 'BTC';
+    it('should call fetchCryptoCurrency', async () => {
+        component.cryptoCurrency = 'btc';
 
-    //     button.click();
-    //     const div = component.shadowRoot.querySelector('#cryptovalue');
+        await component.fetchCryptoCurrency();
+        const div = component.shadowRoot.querySelector('#cryptovalue');
 
-    //     console.log(div.children);
-    //     expect(div.hasChildNodes()).toBeTruthy();
-    // });
+        expect(div.children[0]).toBeTruthy();
+        expect(div.children[0].textContent.includes('$')).toBeTruthy();
+    });
     it('should call fetchDataListOptions and that should add options to the datalist', async () => {
         await component.fetchDataListOptions();
         const datalist = component.shadowRoot.querySelector('#cryptocurrencies');

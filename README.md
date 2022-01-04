@@ -2,7 +2,7 @@
 This will be a custom web component that will allow for you to search for a crypto currency and fetch it's current USD dollar value.
 
 ## Installation
-    `npm i crypto-web-component`
+    npm i crypto-web-component
 
 ## Usage
 
@@ -23,6 +23,56 @@ This will be a custom web component that will allow for you to search for a cryp
 </html>
 ```
 
+## Angular setup
+### AppModule Setup
+In the `app.module.ts` file, you must declare your schema to be custom:
+
+```typescript
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] //this line here
+})
+```
+### angular.json Setup
+In the build section, add the `crypto-web-component.js`:
+
+```jsonc
+"architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/test-angular",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": [
+                "node_modules/@bdbrown4/crypto-web-component/crypto-web-component.js"] // this line here
+          }
+```
+### HTML Example
+Here's an example of it being used in the `app.component.html`:
+```html
+<h1>This is my test angular application</h1>
+<crypto-web-component></crypto-web-component>
+```
+
 ## What does it do?
 
-It allows you to find the current USD value of BTC(Bitcoin), ETH(Ethereum), or LTC(Litecoin).
+It allows you to find the current USD value of any crypto currency available via Coinbase API.

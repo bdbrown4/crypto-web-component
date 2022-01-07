@@ -2,7 +2,8 @@
 This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD dollar value.
 
 ## Display
-Here is how the web component is displayed
+Here is how the web component is displayed:
+
 ![plot](./crypto.gif)
 
 ## Installation

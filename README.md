@@ -1,9 +1,9 @@
 # crypto-web-component
-This will be a custom web component that will allow for you to search for a crypto currency and fetch it's current USD dollar value.
+This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD dollar value.
 
 ## Display
-Here is how to web component is displayed
-![plot](./example.png)
+Here is how the web component is displayed
+![plot](./crypto.gif)
 
 ## Installation
     npm i crypto-web-component

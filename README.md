@@ -1,5 +1,5 @@
 # crypto-web-component
-This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD dollar value.
+This is a custom web component that allows you to search for a crypto currency and fetch its current $USD dollar value.
 
 ## Display
 Here is how the web component is displayed:
@@ -30,7 +30,7 @@ Here is how the web component is displayed:
 
 ## Angular setup
 ### AppModule Setup
-In the `app.module.ts` file, you must declare your schema to be custom:
+In the `app.module.ts` file, you must declare your *schema* to be custom:
 
 ```typescript
 @NgModule({
@@ -45,7 +45,8 @@ In the `app.module.ts` file, you must declare your schema to be custom:
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA] //this line here
 })
-```
+```  
+
 ### angular.json Setup
 In the build section, add the `crypto-web-component.js`:
 
@@ -68,7 +69,7 @@ In the build section, add the `crypto-web-component.js`:
               "src/styles.scss"
             ],
             "scripts": [
-                "node_modules/@bdbrown4/crypto-web-component/crypto-web-component.js"] // this line here
+                "node_modules/@bdbrown4/crypto-web-component/crypto-web-component.js"] // <- this line here
           }
 ```
 ### HTML Example
@@ -80,4 +81,4 @@ Here's an example of it being used in the `app.component.html`:
 
 ## What does it do?
 
-It allows you to find the current USD value of any crypto currency available via Coinbase API.
+It allows you to find the current USD value of any crypto currency available via the [Coinbase API](https://developers.coinbase.com/).

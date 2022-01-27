@@ -23,7 +23,7 @@ Here is how the web component is displayed:
 <body>
     <h1>Testing out how our web component will render below:</h1>
     <crypto-web-component></crypto-web-component>
-    <script src="node_modules/crypto-web-component/crypto-web-component.js"></script>
+    <script src="node_modules/@bdbrown4/crypto-web-component/dist/crypto-web-component.js"></script>
 </body>
 </html>
 ```
@@ -69,7 +69,7 @@ In the build section, add the `crypto-web-component.js`:
               "src/styles.scss"
             ],
             "scripts": [
-                "node_modules/@bdbrown4/crypto-web-component/crypto-web-component.js"] // <- this line here
+                "node_modules/@bdbrown4/crypto-web-component/dist/crypto-web-component.js"] // <- this line here
           }
 ```
 ### HTML Example

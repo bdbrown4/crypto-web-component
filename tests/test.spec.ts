@@ -1,9 +1,10 @@
-const { CryptoWebComponent } = require('../crypto-web-component');
+import { CryptoWebComponent } from '../crypto-web-component';
+import { enableFetchMocks } from 'jest-fetch-mock';
 
 describe('CryptoWebComponent', () => {
     const component = new CryptoWebComponent();
     beforeEach(() => {
-        require('jest-fetch-mock').enableMocks();
+        enableFetchMocks();
     });
     it('should define the component', () => {
         expect(component).toBeTruthy();

@@ -357,7 +357,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "crypto-web-component::part(container) {\n  text-align: center;\n  width: 30%;\n  background-color: antiquewhite;\n  border-radius: 25px;\n  padding: 20px; }\n\ncrypto-web-component::part(input) {\n  margin-top: 12px;\n  display: inline-block;\n  border-radius: 25px;\n  padding: 9px 9px 9px 12px;\n  color: #f7931a;\n  font-weight: 600;\n  border-style: inset;\n  width: inherit;\n  min-width: 115px; }\n\ncrypto-web-component::part(p) {\n  font-family: Georgia, serif;\n  font-size: 24px;\n  color: #f7931a;\n  text-align: center; }\n\ncrypto-web-component::part(button) {\n  background-color: #f7931a;\n  color: mintcream;\n  margin-top: 12px;\n  border-radius: 25px;\n  font-family: Georgia, serif;\n  font-size: 16px;\n  padding: 8px;\n  border-style: none; }\n\ncrypto-web-component::part(img) {\n  height: 75px; }\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "crypto-web-component::part(button) {\n  background-color: #f7931a;\n  border-radius: 25px;\n  border-style: none;\n  color: mintcream;\n  font-family: Georgia, serif;\n  font-size: 16px;\n  margin-top: 12px;\n  padding: 8px; }\n\ncrypto-web-component::part(container) {\n  background-color: antiquewhite;\n  border-radius: 25px;\n  text-align: center;\n  padding: 20px;\n  width: 30%; }\n\ncrypto-web-component::part(img) {\n  height: 75px; }\n\ncrypto-web-component::part(input) {\n  border-radius: 25px;\n  border-style: inset;\n  color: #f7931a;\n  display: inline-block;\n  font-weight: 600;\n  margin-top: 12px;\n  min-width: 115px;\n  padding: 9px 9px 9px 12px;\n  width: inherit; }\n\ncrypto-web-component::part(p) {\n  color: #f7931a;\n  font-family: Georgia, serif;\n  font-size: 24px;\n  text-align: center; }\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1360,6 +1360,12 @@ class CryptoWebComponent extends HTMLElement {
         this.shadowRoot.innerHTML = _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_2__["default"];
         this.fetchDataListOptions();
     }
+    get cryptoCurrencyValue() {
+        return this.cryptoCurrency;
+    }
+    set setCryptoCurrencyValue(val) {
+        this.cryptoCurrency = val;
+    }
     connectedCallback() {
         this.shadowRoot.querySelector('#fetchCryptoValue')
             .addEventListener('click', this.fetchCryptoCurrency.bind(this));
@@ -1374,12 +1380,12 @@ class CryptoWebComponent extends HTMLElement {
     }
     fetchDataListOptions() {
         return __awaiter(this, void 0, void 0, function* () {
-            var uri = 'https://api.exchange.coinbase.com/currencies';
-            var response = yield fetch(uri, {
+            const uri = 'https://api.exchange.coinbase.com/currencies';
+            const response = yield fetch(uri, {
                 method: 'GET'
             }).then(data => data.json())
                 .catch(err => console.log(err));
-            var datalist = this.shadowRoot.querySelector('#cryptocurrencies');
+            const datalist = this.shadowRoot.querySelector('#cryptocurrencies');
             response.forEach((crypto) => {
                 const option = document.createElement('option');
                 option.value = crypto.id;
@@ -1390,8 +1396,8 @@ class CryptoWebComponent extends HTMLElement {
     }
     fetchCryptoCurrency() {
         return __awaiter(this, void 0, void 0, function* () {
-            var uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
-            var response = yield fetch(uri, {
+            const uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
+            const response = yield fetch(uri, {
                 method: 'GET'
             }).then(data => data.json());
             const div = this.shadowRoot.querySelector('#cryptovalue');
@@ -1412,14 +1418,9 @@ class CryptoWebComponent extends HTMLElement {
         div.innerHTML = '';
         div.hidden = true;
         const selection = this.shadowRoot.querySelector('#cryptocurrency');
-        this.cryptoCurrency = selection.value;
+        this.setCryptoCurrencyValue = selection.value;
         const button = this.shadowRoot.querySelector('#fetchCryptoValue');
-        if (this.cryptoCurrency) {
-            button.disabled = false;
-        }
-        else {
-            button.disabled = true;
-        }
+        button.disabled = this.cryptoCurrency ? false : true;
     }
 }
 window.customElements.define('crypto-web-component', CryptoWebComponent);

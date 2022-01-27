@@ -3,7 +3,18 @@ import 'regenerator-runtime/runtime.js';
 import template from './templates/crypto-web-component.html';
 
 export class CryptoWebComponent extends HTMLElement {
-    cryptoCurrency = '';
+    private cryptoCurrency: string = '';
+    public get cryptoCurrencyValue() {
+        return this.cryptoCurrency;
+    }
+    public set setCryptoCurrencyValue(val: string) {
+        this.cryptoCurrency = val;
+    }
+    private readonly formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -26,13 +37,13 @@ export class CryptoWebComponent extends HTMLElement {
     }
 
     async fetchDataListOptions() {
-        var uri = 'https://api.exchange.coinbase.com/currencies';
-        var response = await fetch(uri, {
+        const uri = 'https://api.exchange.coinbase.com/currencies';
+        const response = await fetch(uri, {
             method: 'GET'
         }).then(data => data.json())
           .catch(err => console.log(err));
 
-        var datalist = this.shadowRoot.querySelector('#cryptocurrencies');
+        const datalist = this.shadowRoot.querySelector('#cryptocurrencies');
 
         response.forEach((crypto: { id: string; name: any; }) => {
             const option = document.createElement('option');
@@ -43,8 +54,8 @@ export class CryptoWebComponent extends HTMLElement {
     }
 
     async fetchCryptoCurrency() {
-        var uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
-        var response = await fetch(uri, {
+        const uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
+        const response = await fetch(uri, {
             method: 'GET'
         }).then(data => data.json());
         
@@ -61,24 +72,15 @@ export class CryptoWebComponent extends HTMLElement {
         div.hidden = false;
     }
 
-    activateButton() {
+    private activateButton() {
         const div: HTMLDivElement = this.shadowRoot.querySelector('#cryptovalue');
         div.innerHTML = '';
         div.hidden = true;
         const selection: HTMLInputElement = this.shadowRoot.querySelector('#cryptocurrency');
-        this.cryptoCurrency = selection.value;
+        this.setCryptoCurrencyValue = selection.value;
         const button: HTMLButtonElement = this.shadowRoot.querySelector('#fetchCryptoValue');
-        if (this.cryptoCurrency) {
-            button.disabled = false;
-        } else {
-            button.disabled = true;
-        }
+        button.disabled = this.cryptoCurrency ? false : true;
     }
-
-    formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      });
 }
 
 window.customElements.define('crypto-web-component', CryptoWebComponent);

@@ -10,7 +10,7 @@ describe('CryptoWebComponent', () => {
         expect(component).toBeTruthy();
     });
     it('should call fetchCryptoCurrency', async () => {
-        component.cryptoCurrency = 'btc';
+        component.setCryptoCurrencyValue = 'btc';
         fetchMock.dontMock();
         await component.fetchCryptoCurrency();
         const div = component.shadowRoot.querySelector('#cryptovalue');

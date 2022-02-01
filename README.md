@@ -7,7 +7,7 @@ Here is how the web component is displayed:
 ![plot](./crypto.gif)
 
 ## Installation
-    npm i crypto-web-component
+    npm i @bdbrown4/crypto-web-component
 
 ## Usage
 
@@ -77,6 +77,37 @@ Here's an example of it being used in the `app.component.html`:
 ```html
 <h1>This is my test angular application</h1>
 <crypto-web-component></crypto-web-component>
+```
+## React setup
+
+### Wire up App.js
+```js
+import logo from './logo.svg';
+import './App.css';
+import '@bdbrown4/crypto-web-component/dist/crypto-web-component'; // this line here
+
+// <crypto-web-component> defined in HTML below
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <crypto-web-component></crypto-web-component>
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
 ```
 
 ## What does it do?

@@ -1,5 +1,5 @@
 # crypto-web-component
-This is a custom web component that allows you to search for a crypto currency and fetch its current $USD dollar value.
+This is a custom web component that allows you to search for a crypto currency and fetch its current $USD value.
 
 ## Display
 Here is how the web component is displayed:

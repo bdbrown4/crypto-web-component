@@ -1399,7 +1399,8 @@ class CryptoWebComponent extends HTMLElement {
             const uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
             const response = yield fetch(uri, {
                 method: 'GET'
-            }).then(data => data.json());
+            }).then(data => data.json())
+                .catch(err => console.log(err));
             const div = this.shadowRoot.querySelector('#cryptovalue');
             const para = document.createElement('p');
             para.setAttribute('part', 'p');

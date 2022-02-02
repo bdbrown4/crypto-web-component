@@ -1,6 +1,6 @@
 {
   "name": "@bdbrown4/crypto-web-component",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD value.",
   "main": "crypto-web-component.ts",
   "scripts": {

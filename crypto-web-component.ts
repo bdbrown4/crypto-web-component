@@ -1,19 +1,21 @@
 import './styles/crypto-web-component.scss';
 import 'regenerator-runtime/runtime.js';
 import template from './templates/crypto-web-component.html';
+import { CryptoData } from './models/crypto-data.interface';
+import { CryptoTicker } from './models/crypto-ticker.interface';
 
 export class CryptoWebComponent extends HTMLElement {
     private cryptoCurrency: string = '';
-    public get cryptoCurrencyValue() {
+    public get cryptoCurrencyValue(): string {
         return this.cryptoCurrency;
     }
     public set setCryptoCurrencyValue(val: string) {
         this.cryptoCurrency = val;
     }
-    private readonly formatter = new Intl.NumberFormat('en-US', {
+    private readonly formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD'
-      });
+    });
 
     constructor() {
         super();
@@ -22,30 +24,30 @@ export class CryptoWebComponent extends HTMLElement {
         this.fetchDataListOptions();
     }
 
-    connectedCallback() {
+    connectedCallback(): void {
         this.shadowRoot.querySelector('#fetchCryptoValue')
             .addEventListener('click', this.fetchCryptoCurrency.bind(this));
         this.shadowRoot.querySelector('#cryptocurrency')
             .addEventListener('input', this.activateButton.bind(this));
     }
 
-    disconnectedCallback() {
+    disconnectedCallback(): void {
         this.shadowRoot.querySelector('#fetchCryptoValue')
             .removeEventListener('click', this.fetchCryptoCurrency.bind(this));
         this.shadowRoot.querySelector('#cryptocurrency')
             .removeEventListener('input', this.activateButton.bind(this));
     }
 
-    async fetchDataListOptions() {
-        const uri = 'https://api.exchange.coinbase.com/currencies';
-        const response = await fetch(uri, {
+    async fetchDataListOptions(): Promise<void> {
+        const uri: string = 'https://api.exchange.coinbase.com/currencies';
+        const response: CryptoData[] = await fetch(uri, {
             method: 'GET'
         }).then(data => data.json())
-          .catch(err => console.log(err));
+            .catch(err => console.log(err));
 
         const datalist = this.shadowRoot.querySelector('#cryptocurrencies');
 
-        response.forEach((crypto: { id: string; name: any; }) => {
+        response.forEach((crypto) => {
             const option = document.createElement('option');
             option.value = crypto.id;
             option.innerText = `${crypto.name} - ${crypto.id}`;
@@ -53,14 +55,15 @@ export class CryptoWebComponent extends HTMLElement {
         });
     }
 
-    async fetchCryptoCurrency() {
-        const uri = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
-        const response = await fetch(uri, {
+    async fetchCryptoCurrency(): Promise<void> {
+        const uri: string = `https://api.exchange.coinbase.com/products/${this.cryptoCurrency}-usd/ticker`;
+        const response: CryptoTicker = await fetch(uri, {
             method: 'GET'
-        }).then(data => data.json());
-        
+        }).then(data => data.json())
+            .catch(err => console.log(err));
+
         const div: HTMLDivElement = this.shadowRoot.querySelector('#cryptovalue');
-        const para = document.createElement('p');
+        const para: HTMLParagraphElement = document.createElement('p');
         para.setAttribute('part', 'p');
         para.innerHTML = response.message ?
             `There was an error fetching ${this.cryptoCurrency} from Coinbase.` :
@@ -72,7 +75,7 @@ export class CryptoWebComponent extends HTMLElement {
         div.hidden = false;
     }
 
-    private activateButton() {
+    private activateButton(): void {
         const div: HTMLDivElement = this.shadowRoot.querySelector('#cryptovalue');
         div.innerHTML = '';
         div.hidden = true;

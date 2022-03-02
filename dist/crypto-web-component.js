@@ -868,13 +868,13 @@ var code = "<div class='container'>\r\n    <btc-img-component></btc-img-componen
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Store": () => (/* binding */ Store)
+/* harmony export */   "CryptoStore": () => (/* binding */ CryptoStore)
 /* harmony export */ });
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
 /* harmony import */ var _reducer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
 
 
-const Store = (0,redux__WEBPACK_IMPORTED_MODULE_1__.createStore)(_reducer__WEBPACK_IMPORTED_MODULE_0__.reducer);
+const CryptoStore = (0,redux__WEBPACK_IMPORTED_MODULE_1__.createStore)(_reducer__WEBPACK_IMPORTED_MODULE_0__.reducer);
 
 
 /***/ }),
@@ -886,6 +886,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "reducer": () => (/* binding */ reducer)
 /* harmony export */ });
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
+
 const initialState = {
     cryptoData: {
         id: '',
@@ -897,10 +899,12 @@ const initialState = {
     selectedCryptoTicker: ''
 };
 const reducer = (state = initialState, action) => {
-    console.log(action.type);
     switch (action.type) {
-        case '': {
-            return state;
+        case _actions__WEBPACK_IMPORTED_MODULE_0__.CryptoDataAction.LOAD_CRYPTO_DATA_LIST_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { cryptoData: action.payload });
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__.CryptoTickerAction.LOAD_CRYPTO_TICKER_DATA_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { cryptoTicker: action.payload });
         }
         default: {
             return state;
@@ -916,6 +920,36 @@ const reducer = (state = initialState, action) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CryptoDataAction": () => (/* binding */ CryptoDataAction),
+/* harmony export */   "CryptoTickerAction": () => (/* binding */ CryptoTickerAction)
+/* harmony export */ });
+class CryptoDataAction {
+    static loadCryptoDataSuccess(model) {
+        return {
+            payload: model,
+            type: CryptoDataAction.LOAD_CRYPTO_DATA_LIST_SUCCESS,
+        };
+    }
+}
+CryptoDataAction.LOAD_CRYPTO_DATA_LIST_SUCCESS = '[Crypto Web Component] LOAD_CRYPTO_DATA_LIST_SUCCESS';
+class CryptoTickerAction {
+    static loadCryptoTickerSuccess(model) {
+        return {
+            payload: model,
+            type: CryptoTickerAction.LOAD_CRYPTO_TICKER_DATA_SUCCESS,
+        };
+    }
+}
+CryptoTickerAction.LOAD_CRYPTO_TICKER_DATA_SUCCESS = '[Crypto Web Component] LOAD_CRYPTO_DATA_LIST_SUCCESS';
+
+
+/***/ }),
+/* 11 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "__DO_NOT_USE__ActionTypes": () => (/* binding */ ActionTypes),
 /* harmony export */   "applyMiddleware": () => (/* binding */ applyMiddleware),
 /* harmony export */   "bindActionCreators": () => (/* binding */ bindActionCreators),
@@ -923,7 +957,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "compose": () => (/* binding */ compose),
 /* harmony export */   "createStore": () => (/* binding */ createStore)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_objectSpread2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+/* harmony import */ var _babel_runtime_helpers_esm_objectSpread2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
 
 
 /**
@@ -1611,7 +1645,7 @@ if (({}).NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCr
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1619,7 +1653,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ _objectSpread2)
 /* harmony export */ });
-/* harmony import */ var _defineProperty_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var _defineProperty_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
 
 
 function ownKeys(object, enumerableOnly) {
@@ -1649,7 +1683,7 @@ function _objectSpread2(target) {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1756,6 +1790,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
 /* harmony import */ var _services_style_loader_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 /* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+/* harmony import */ var _redux_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(10);
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1765,6 +1800,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -1783,8 +1819,7 @@ class CryptoWebComponent extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_3__["default"];
         this.styleLoaderService.loadStylesIntoShadowRoot(_styles_crypto_web_component_scss__WEBPACK_IMPORTED_MODULE_0__["default"], this.shadowRoot);
-        _redux_store__WEBPACK_IMPORTED_MODULE_5__.Store.subscribe(() => console.log(_redux_store__WEBPACK_IMPORTED_MODULE_5__.Store.getState()));
-        _redux_store__WEBPACK_IMPORTED_MODULE_5__.Store.dispatch({ type: 'component initialize' });
+        _redux_store__WEBPACK_IMPORTED_MODULE_5__.CryptoStore.subscribe(() => console.log(_redux_store__WEBPACK_IMPORTED_MODULE_5__.CryptoStore.getState()));
         this.fetchDataListOptions();
     }
     get cryptoCurrencyValue() {
@@ -1812,6 +1847,7 @@ class CryptoWebComponent extends HTMLElement {
                 method: 'GET'
             }).then(data => data.json())
                 .catch(err => console.log(err));
+            _redux_store__WEBPACK_IMPORTED_MODULE_5__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_6__.CryptoDataAction.loadCryptoDataSuccess(response));
             const datalist = this.shadowRoot.querySelector('#cryptocurrencies');
             response.forEach((crypto) => {
                 const option = document.createElement('option');
@@ -1828,6 +1864,7 @@ class CryptoWebComponent extends HTMLElement {
                 method: 'GET'
             }).then(data => data.json())
                 .catch(err => console.log(err));
+            _redux_store__WEBPACK_IMPORTED_MODULE_5__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_6__.CryptoTickerAction.loadCryptoTickerSuccess(response));
             const div = this.shadowRoot.querySelector('#cryptovalue');
             const para = document.createElement('p');
             para.setAttribute('part', 'p');

@@ -6,6 +6,7 @@ import { CryptoData } from '../models/crypto-data.interface';
 import { CryptoTicker } from '../models/crypto-ticker.interface';
 import { StyleLoaderService } from '../services/style-loader.service';
 import { CryptoStore } from '../redux/store';
+import { CryptoDataAction, CryptoTickerAction, SelectedCryptoTickerAction } from '../redux/actions';
 
 export class CryptoWebComponent extends HTMLElement {
     private cryptoCurrency: string = '';
@@ -15,6 +16,7 @@ export class CryptoWebComponent extends HTMLElement {
     }
     public set setCryptoCurrencyValue(val: string) {
         this.cryptoCurrency = val;
+        CryptoStore.dispatch(SelectedCryptoTickerAction.loadSelectedCryptoTickerSuccess(val));
     }
     private readonly formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -27,7 +29,6 @@ export class CryptoWebComponent extends HTMLElement {
         this.shadowRoot.innerHTML = template;
         this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
         CryptoStore.subscribe(() => console.log(CryptoStore.getState()));
-        CryptoStore.dispatch({ type: 'component initialize'});
         this.fetchDataListOptions();
     }
 
@@ -52,6 +53,8 @@ export class CryptoWebComponent extends HTMLElement {
         }).then(data => data.json())
             .catch(err => console.log(err));
 
+        CryptoStore.dispatch(CryptoDataAction.loadCryptoDataSuccess(response));
+
         const datalist = this.shadowRoot.querySelector('#cryptocurrencies');
 
         response.forEach((crypto) => {
@@ -68,6 +71,8 @@ export class CryptoWebComponent extends HTMLElement {
             method: 'GET'
         }).then(data => data.json())
             .catch(err => console.log(err));
+
+        CryptoStore.dispatch(CryptoTickerAction.loadCryptoTickerSuccess(response));
 
         const div: HTMLDivElement = this.shadowRoot.querySelector('#cryptovalue');
         const para: HTMLParagraphElement = document.createElement('p');

@@ -1,6 +1,6 @@
 {
   "name": "@bdbrown4/crypto-web-component",
-  "version": "2.0.6",
+  "version": "3.0.0",
   "description": "This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD value.",
   "main": "crypto-web-component.ts",
   "scripts": {
@@ -28,6 +28,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@happy-dom/jest-environment": "^2.25.1",
     "@types/jest": "^27.4.0",
+    "@types/redux": "^3.6.0",
     "@types/webpack-env": "^1.16.3",
     "babel-jest": "^27.4.6",
     "babel-loader": "^8.2.3",
@@ -38,6 +39,7 @@
     "jest-fetch-mock": "^3.0.3",
     "node-sass": "^7.0.1",
     "raw-loader": "^4.0.2",
+    "redux": "^4.1.2",
     "regenerator-runtime": "^0.13.9",
     "sass-loader": "^12.4.0",
     "ts-jest": "^27.1.3",

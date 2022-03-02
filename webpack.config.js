@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: "none",
@@ -48,5 +49,11 @@ module.exports = {
         loader: "ts-loader"
       }
     ]
-  }
+  },
+  plugins:[
+    // needed to ignore the process check in the redux lib
+    new webpack.DefinePlugin({
+        process: {env: {}}
+    })
+  ]
 }

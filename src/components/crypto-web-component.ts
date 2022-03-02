@@ -5,6 +5,7 @@ import template from '../templates/crypto-web-component.html';
 import { CryptoData } from '../models/crypto-data.interface';
 import { CryptoTicker } from '../models/crypto-ticker.interface';
 import { StyleLoaderService } from '../services/style-loader.service';
+import { CryptoStore } from '../redux/store';
 
 export class CryptoWebComponent extends HTMLElement {
     private cryptoCurrency: string = '';
@@ -25,6 +26,8 @@ export class CryptoWebComponent extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
         this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
+        CryptoStore.subscribe(() => console.log(CryptoStore.getState()));
+        CryptoStore.dispatch({ type: 'component initialize'});
         this.fetchDataListOptions();
     }
 

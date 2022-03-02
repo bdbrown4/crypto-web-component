@@ -4,7 +4,7 @@ This is a custom web component that allows you to search for a crypto currency a
 ## Display
 Here is how the web component is displayed:
 
-![plot](./crypto.gif)
+![plot](./assets/crypto.gif)
 
 ## Installation
     npm i @bdbrown4/crypto-web-component

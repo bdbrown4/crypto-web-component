@@ -1,7 +1,8 @@
 const path = require('path');
+
 module.exports = {
   mode: "none",
-  entry: "./crypto-web-component.ts",
+  entry: "./src/components/crypto-web-component.ts",
   output: {
     path: __dirname + '/dist',
     filename: "crypto-web-component.js"
@@ -9,11 +10,22 @@ module.exports = {
   devServer: {
     static: path.join(__dirname, 'dist')
   },
+  resolve: {
+    extensions: [".js", ".ts"],
+  },
   module: {
     rules: [
       {
         test: /\.(s(a|c)ss)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
+        use: ['raw-loader', {
+          loader:'sass-loader',
+          options: { 
+            sassOptions:{
+              includePaths: [path.resolve(__dirname, 'node_modules')]
+            }
+          }
+        }
+      ]
       },
       {
         test: /\.html$/i,

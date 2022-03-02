@@ -1,4 +1,4 @@
-import { CryptoWebComponent } from '../crypto-web-component';
+import { CryptoWebComponent } from '../components/crypto-web-component';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
 describe('CryptoWebComponent', () => {

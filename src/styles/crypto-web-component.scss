@@ -1,4 +1,4 @@
-crypto-web-component::part(button) {
+button {
     background-color: #f7931a;
     border-radius: 25px;
     border-style: none;
@@ -9,7 +9,7 @@ crypto-web-component::part(button) {
     padding: 8px;
 }
 
-crypto-web-component::part(container) {
+.container {
     background-color: antiquewhite;
     border-radius: 25px;
     text-align: center;
@@ -17,11 +17,7 @@ crypto-web-component::part(container) {
     width: 30%;
 }
 
-crypto-web-component::part(img) {
-    height: 75px;
-}
-
-crypto-web-component::part(input) {
+input {
     border-radius: 25px;
     border-style: inset;
     color: #f7931a;
@@ -33,7 +29,7 @@ crypto-web-component::part(input) {
     width: inherit;
 }
 
-crypto-web-component::part(p) {
+p {
     color: #f7931a;
     font-family: Georgia, serif;
     font-size: 24px;

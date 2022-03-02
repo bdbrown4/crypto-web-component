@@ -1,11 +1,14 @@
-import './styles/crypto-web-component.scss';
+import cryptoStyles from '../styles/crypto-web-component.scss';
 import 'regenerator-runtime/runtime.js';
-import template from './templates/crypto-web-component.html';
-import { CryptoData } from './models/crypto-data.interface';
-import { CryptoTicker } from './models/crypto-ticker.interface';
+import './btc-img-component';
+import template from '../templates/crypto-web-component.html';
+import { CryptoData } from '../models/crypto-data.interface';
+import { CryptoTicker } from '../models/crypto-ticker.interface';
+import { StyleLoaderService } from '../services/style-loader.service';
 
 export class CryptoWebComponent extends HTMLElement {
     private cryptoCurrency: string = '';
+    private styleLoaderService: StyleLoaderService = new StyleLoaderService();
     public get cryptoCurrencyValue(): string {
         return this.cryptoCurrency;
     }
@@ -21,6 +24,7 @@ export class CryptoWebComponent extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
+        this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
         this.fetchDataListOptions();
     }
 

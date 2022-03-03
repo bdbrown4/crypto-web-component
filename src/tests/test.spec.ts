@@ -1,23 +1,23 @@
-import { CryptoWebComponent } from '../components/crypto-web-component';
+import { CryptoDataListComponent } from '../components/crypto-data-list-component';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
-describe('CryptoWebComponent', () => {
-    const component = new CryptoWebComponent();
+describe('CryptoDataListComponent', () => {
+    const component = new CryptoDataListComponent();
     beforeEach(() => {
         enableFetchMocks();
     });
     it('should define the component', () => {
         expect(component).toBeTruthy();
     });
-    it('should call fetchCryptoCurrency', async () => {
-        component.setCryptoCurrencyValue = 'btc';
-        fetchMock.dontMock();
-        await component.fetchCryptoCurrency();
-        const div = component.shadowRoot.querySelector('#cryptovalue');
+    // it('should call fetchCryptoCurrency', async () => {
+    //     component.setCryptoCurrencyValue = 'btc';
+    //     fetchMock.dontMock();
+    //     await component.fetchCryptoCurrency();
+    //     const div = component.shadowRoot.querySelector('#cryptovalue');
 
-        expect(div.children[0]).toBeTruthy();
-        expect(div.children[0].textContent.includes('$')).toBeTruthy();
-    });
+    //     expect(div.children[0]).toBeTruthy();
+    //     expect(div.children[0].textContent.includes('$')).toBeTruthy();
+    // });
     it('should call fetchDataListOptions and that should add options to the datalist', async () => {
         fetchMock.dontMock();
         await component.fetchDataListOptions();

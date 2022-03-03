@@ -1,3 +1,15 @@
+input {
+    border-radius: 25px;
+    border-style: inset;
+    color: #f7931a;
+    display: inline-block;
+    font-weight: 600;
+    margin-top: 12px;
+    min-width: 115px;
+    padding: 9px 9px 9px 12px;
+    width: inherit;
+}
+
 button {
     background-color: #f7931a;
     border-radius: 25px;
@@ -9,13 +21,6 @@ button {
     padding: 8px;
 }
 
-.container {
-    background-color: antiquewhite;
-    border-radius: 25px;
-    text-align: center;
-    padding: 20px;
-    width: 30%;
-}
 
 p {
     color: #f7931a;

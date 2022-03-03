@@ -55,14 +55,13 @@ export class CryptoDataListComponent extends HTMLElement {
     }
 
     private activateButton(): void {
-        console.log("Ope");
         const state: State = CryptoStore.getState();
         const div: HTMLDivElement = state.uiTemplateState.cryptoWebTemplate.cryptoWebShadowRoot.querySelector('#cryptovalue');
         div.innerHTML = '';
         div.hidden = true;
         const selection: HTMLInputElement = this.shadowRoot.querySelector('#cryptocurrency');
         this.setCryptoCurrencyValue = selection.value;
-        const button: HTMLButtonElement = state.uiTemplateState.cryptoWebTemplate.cryptoWebShadowRoot.querySelector('#fetchCryptoValue');
+        const button: HTMLButtonElement = state.uiTemplateState.cryptoButtonTemplate.cryptoButtonShadowRoot.querySelector('#fetchCryptoValue');
         button.disabled = this.cryptoCurrency ? false : true;
     }
 }

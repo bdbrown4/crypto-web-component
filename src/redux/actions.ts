@@ -1,5 +1,6 @@
 import IAction from "../models/action.interface";
 import { BtcImgTemplate } from "../models/btc-img-template.interface";
+import { CryptoButtonTemplate } from "../models/crypto-button-template.interface";
 import { CryptoDataListTemplate } from "../models/crypto-data-list-template.interface";
 import { CryptoData } from "../models/crypto-data.interface";
 import { CryptoTicker } from "../models/crypto-ticker.interface";
@@ -67,6 +68,17 @@ export class LoadCryptoWebTemplateAction {
         return {
             payload: model,
             type: LoadCryptoWebTemplateAction.LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS,
+        };
+    }
+}
+
+export class LoadCryptoButtonTemplateAction {
+    public static readonly LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS: string = '[Crypto Web Component] LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS';
+
+    public static loadCryptoButtonTemplateSuccess(model: CryptoButtonTemplate): IAction<CryptoButtonTemplate> {
+        return {
+            payload: model,
+            type: LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS,
         };
     }
 }

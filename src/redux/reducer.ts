@@ -15,7 +15,8 @@ const initialState: State = {
     uiTemplateState: {
         btcImgTemplate: null,
         cryptoDataListTemplate: null,
-        cryptoWebTemplate: null
+        cryptoWebTemplate: null,
+        cryptoButtonTemplate: null
     }
 };
 
@@ -38,6 +39,9 @@ export const reducer = (state: State = initialState, action: IAction<CryptoActio
         }
         case CryptoActions.LoadCryptoWebTemplateAction.LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS: {
             return { ...state, uiTemplateState: { ...state.uiTemplateState, cryptoWebTemplate: action.payload } };
+        }
+        case CryptoActions.LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS: {
+            return { ...state, uiTemplateState: { ...state.uiTemplateState, cryptoButtonTemplate: action.payload } };
         }
         default: {
             return state;

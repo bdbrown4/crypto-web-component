@@ -1,10 +1,7 @@
 import IAction from "../models/action.interface";
-import { BtcImgTemplate } from "../models/btc-img-template.interface";
-import { CryptoButtonTemplate } from "../models/crypto-button-template.interface";
-import { CryptoDataListTemplate } from "../models/crypto-data-list-template.interface";
+import { ComponentTemplate } from "../models/component-template.interface";
 import { CryptoData } from "../models/crypto-data.interface";
 import { CryptoTicker } from "../models/crypto-ticker.interface";
-import { CryptoWebTemplate } from "../models/crypto-web-template.interface";
 
 export class CryptoDataAction {
     public static readonly LOAD_CRYPTO_DATA_LIST_SUCCESS: string = '[Crypto Web Component] LOAD_CRYPTO_DATA_LIST_SUCCESS';
@@ -42,7 +39,7 @@ export class SelectedCryptoTickerAction {
 export class LoadBtcImgTemplateAction {
     public static readonly LOAD_BTC_IMG_TEMPLATE_SUCCESS: string = '[Crypto Web Component] LOAD_BTC_IMG_TEMPLATE_SUCCESS';
 
-    public static loadBtcImgTemplateSuccess(model: BtcImgTemplate): IAction<BtcImgTemplate> {
+    public static loadBtcImgTemplateSuccess(model: ComponentTemplate): IAction<ComponentTemplate> {
         return {
             payload: model,
             type: LoadBtcImgTemplateAction.LOAD_BTC_IMG_TEMPLATE_SUCCESS,
@@ -53,7 +50,7 @@ export class LoadBtcImgTemplateAction {
 export class LoadCryptoDataListTemplateAction {
     public static readonly LOAD_CRYPTO_DATA_LIST_TEMPLATE_SUCCESS: string = '[Crypto Web Component] LOAD_CRYPTO_DATA_LIST_TEMPLATE_SUCCESS';
 
-    public static loadCryptoDataListTemplateSuccess(model: CryptoDataListTemplate): IAction<CryptoDataListTemplate> {
+    public static loadCryptoDataListTemplateSuccess(model: ComponentTemplate): IAction<ComponentTemplate> {
         return {
             payload: model,
             type: LoadCryptoDataListTemplateAction.LOAD_CRYPTO_DATA_LIST_TEMPLATE_SUCCESS,
@@ -64,7 +61,7 @@ export class LoadCryptoDataListTemplateAction {
 export class LoadCryptoWebTemplateAction {
     public static readonly LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS: string = '[Crypto Web Component] LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS';
 
-    public static loadCryptoWebTemplateSuccess(model: CryptoWebTemplate): IAction<CryptoWebTemplate> {
+    public static loadCryptoWebTemplateSuccess(model: ComponentTemplate): IAction<ComponentTemplate> {
         return {
             payload: model,
             type: LoadCryptoWebTemplateAction.LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS,
@@ -75,7 +72,7 @@ export class LoadCryptoWebTemplateAction {
 export class LoadCryptoButtonTemplateAction {
     public static readonly LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS: string = '[Crypto Web Component] LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS';
 
-    public static loadCryptoButtonTemplateSuccess(model: CryptoButtonTemplate): IAction<CryptoButtonTemplate> {
+    public static loadCryptoButtonTemplateSuccess(model: ComponentTemplate): IAction<ComponentTemplate> {
         return {
             payload: model,
             type: LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS,

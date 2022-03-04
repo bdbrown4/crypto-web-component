@@ -16,7 +16,7 @@ export class CryptoButtonComponent extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
-        CryptoStore.dispatch(LoadCryptoButtonTemplateAction.loadCryptoButtonTemplateSuccess({ cryptoButtonShadowRoot: this.shadowRoot }));
+        CryptoStore.dispatch(LoadCryptoButtonTemplateAction.loadCryptoButtonTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
     }
 
@@ -39,7 +39,7 @@ export class CryptoButtonComponent extends HTMLElement {
             .catch(err => console.log(err));
 
         CryptoStore.dispatch(CryptoTickerAction.loadCryptoTickerSuccess(response));
-        const div: HTMLDivElement = state.uiTemplateState.cryptoWebTemplate.cryptoWebShadowRoot.querySelector('#cryptovalue');
+        const div: HTMLDivElement = state.uiTemplateState.cryptoWebTemplate.componentShadowRoot.querySelector('#cryptovalue');
         const para: HTMLParagraphElement = document.createElement('p');
         para.setAttribute('part', 'p');
         para.innerHTML = response.message ?

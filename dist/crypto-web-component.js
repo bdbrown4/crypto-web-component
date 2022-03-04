@@ -9,7 +9,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("button {\n  background-color: #f7931a;\n  border-radius: 25px;\n  border-style: none;\n  color: mintcream;\n  font-family: Georgia, serif;\n  font-size: 16px;\n  margin-top: 12px;\n  padding: 8px;\n}\n\n.container {\n  background-color: antiquewhite;\n  border-radius: 25px;\n  text-align: center;\n  padding: 20px;\n  width: 30%;\n}\n\np {\n  color: #f7931a;\n  font-family: Georgia, serif;\n  font-size: 24px;\n  text-align: center;\n}");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".container {\n  background-color: antiquewhite;\n  border-radius: 25px;\n  text-align: center;\n  padding: 20px;\n  width: 30%;\n}\n\np {\n  color: #f7931a;\n  font-family: Georgia, serif;\n  font-size: 24px;\n  text-align: center;\n}");
 
 /***/ }),
 /* 2 */
@@ -796,7 +796,7 @@ class BtcImgComponent extends HTMLElement {
         this.styleLoaderService = new _services_style_loader_service__WEBPACK_IMPORTED_MODULE_2__.StyleLoaderService();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = _templates_btc_img_component_html__WEBPACK_IMPORTED_MODULE_4__["default"];
-        _redux_store__WEBPACK_IMPORTED_MODULE_1__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_0__.LoadBtcImgTemplateAction.loadBtcImgTemplateSuccess({ btcShadowRoot: this.shadowRoot }));
+        _redux_store__WEBPACK_IMPORTED_MODULE_1__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_0__.LoadBtcImgTemplateAction.loadBtcImgTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(_styles_btc_img_component_scss__WEBPACK_IMPORTED_MODULE_3__["default"], this.shadowRoot);
     }
     connectedCallback() {
@@ -819,7 +819,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SelectedCryptoTickerAction": () => (/* binding */ SelectedCryptoTickerAction),
 /* harmony export */   "LoadBtcImgTemplateAction": () => (/* binding */ LoadBtcImgTemplateAction),
 /* harmony export */   "LoadCryptoDataListTemplateAction": () => (/* binding */ LoadCryptoDataListTemplateAction),
-/* harmony export */   "LoadCryptoWebTemplateAction": () => (/* binding */ LoadCryptoWebTemplateAction)
+/* harmony export */   "LoadCryptoWebTemplateAction": () => (/* binding */ LoadCryptoWebTemplateAction),
+/* harmony export */   "LoadCryptoButtonTemplateAction": () => (/* binding */ LoadCryptoButtonTemplateAction)
 /* harmony export */ });
 class CryptoDataAction {
     static loadCryptoDataSuccess(model) {
@@ -875,6 +876,15 @@ class LoadCryptoWebTemplateAction {
     }
 }
 LoadCryptoWebTemplateAction.LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS = '[Crypto Web Component] LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS';
+class LoadCryptoButtonTemplateAction {
+    static loadCryptoButtonTemplateSuccess(model) {
+        return {
+            payload: model,
+            type: LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS,
+        };
+    }
+}
+LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS = '[Crypto Web Component] LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS';
 
 
 /***/ }),
@@ -916,7 +926,8 @@ const initialState = {
     uiTemplateState: {
         btcImgTemplate: null,
         cryptoDataListTemplate: null,
-        cryptoWebTemplate: null
+        cryptoWebTemplate: null,
+        cryptoButtonTemplate: null
     }
 };
 const reducer = (state = initialState, action) => {
@@ -938,6 +949,9 @@ const reducer = (state = initialState, action) => {
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__.LoadCryptoWebTemplateAction.LOAD_CRYPTO_WEB_TEMPLATE_SUCCESS: {
             return Object.assign(Object.assign({}, state), { uiTemplateState: Object.assign(Object.assign({}, state.uiTemplateState), { cryptoWebTemplate: action.payload }) });
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__.LoadCryptoButtonTemplateAction.LOAD_CRYPTO_BUTTON_TEMPLATE_SUCCESS: {
+            return Object.assign(Object.assign({}, state), { uiTemplateState: Object.assign(Object.assign({}, state.uiTemplateState), { cryptoButtonTemplate: action.payload }) });
         }
         default: {
             return state;
@@ -1719,8 +1733,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "StyleLoaderService": () => (/* binding */ StyleLoaderService)
 /* harmony export */ });
 class StyleLoaderService {
-    constructor() {
-    }
+    constructor() { }
     loadStylesIntoShadowRoot(styleSheetText, shadowRoot) {
         const styles = document.createElement('style');
         styles.appendChild(document.createTextNode(styleSheetText));
@@ -1789,7 +1802,7 @@ class CryptoDataListComponent extends HTMLElement {
         this.styleLoaderService = new _services_style_loader_service__WEBPACK_IMPORTED_MODULE_2__.StyleLoaderService();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = _templates_crypto_data_list_component_html__WEBPACK_IMPORTED_MODULE_0__["default"];
-        _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_4__.LoadCryptoDataListTemplateAction.loadCryptoDataListTemplateSuccess({ cryptoDataListShadowRoot: this.shadowRoot }));
+        _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_4__.LoadCryptoDataListTemplateAction.loadCryptoDataListTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(_styles_crypto_data_list_component_scss__WEBPACK_IMPORTED_MODULE_1__["default"], this.shadowRoot);
         this.fetchDataListOptions();
     }
@@ -1826,12 +1839,13 @@ class CryptoDataListComponent extends HTMLElement {
         });
     }
     activateButton() {
-        const div = this.shadowRoot.querySelector('#cryptovalue');
+        const state = _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.getState();
+        const div = state.uiTemplateState.cryptoWebTemplate.componentShadowRoot.querySelector('#cryptovalue');
         div.innerHTML = '';
         div.hidden = true;
         const selection = this.shadowRoot.querySelector('#cryptocurrency');
         this.setCryptoCurrencyValue = selection.value;
-        const button = this.shadowRoot.querySelector('#fetchCryptoValue');
+        const button = state.uiTemplateState.cryptoButtonTemplate.componentShadowRoot.querySelector('#fetchCryptoValue');
         button.disabled = this.cryptoCurrency ? false : true;
     }
 }
@@ -1870,10 +1884,110 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CryptoButtonComponent": () => (/* binding */ CryptoButtonComponent)
+/* harmony export */ });
+/* harmony import */ var _templates_crypto_button_component_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17);
+/* harmony import */ var _styles_crypto_button_component_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
+/* harmony import */ var _redux_actions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
+/* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
+/* harmony import */ var _services_style_loader_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+class CryptoButtonComponent extends HTMLElement {
+    constructor() {
+        super();
+        this.styleLoaderService = new _services_style_loader_service__WEBPACK_IMPORTED_MODULE_4__.StyleLoaderService();
+        this.formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot.innerHTML = _templates_crypto_button_component_html__WEBPACK_IMPORTED_MODULE_0__["default"];
+        _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_2__.LoadCryptoButtonTemplateAction.loadCryptoButtonTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
+        this.styleLoaderService.loadStylesIntoShadowRoot(_styles_crypto_button_component_scss__WEBPACK_IMPORTED_MODULE_1__["default"], this.shadowRoot);
+    }
+    connectedCallback() {
+        this.shadowRoot.querySelector('#fetchCryptoValue')
+            .addEventListener('click', this.fetchCryptoCurrency.bind(this));
+    }
+    disconnectedCallback() {
+        this.shadowRoot.querySelector('#fetchCryptoValue')
+            .removeEventListener('click', this.fetchCryptoCurrency.bind(this));
+    }
+    fetchCryptoCurrency() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const state = _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.getState();
+            const uri = `https://api.exchange.coinbase.com/products/${state.selectedCryptoTicker}-usd/ticker`;
+            const response = yield fetch(uri, {
+                method: 'GET'
+            }).then(data => data.json())
+                .catch(err => console.log(err));
+            _redux_store__WEBPACK_IMPORTED_MODULE_3__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_2__.CryptoTickerAction.loadCryptoTickerSuccess(response));
+            const div = state.uiTemplateState.cryptoWebTemplate.componentShadowRoot.querySelector('#cryptovalue');
+            const para = document.createElement('p');
+            para.setAttribute('part', 'p');
+            para.innerHTML = response.message ?
+                `There was an error fetching ${state.selectedCryptoTicker} from Coinbase.` :
+                this.formatter.format(response.price * 100 / 100);
+            if (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+            div.appendChild(para);
+            div.hidden = false;
+        });
+    }
+}
+window.customElements.define('crypto-button-component', CryptoButtonComponent);
+
+
+/***/ }),
+/* 17 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // Module
-var code = "<div class='container'>\r\n    <btc-img-component></btc-img-component>\r\n    <br>\r\n    <crypto-data-list-component></crypto-data-list-component>\r\n    <button disabled='true' id='fetchCryptoValue'>Fetch a cryptocurrency</button>\r\n    <div id='cryptovalue' hidden='true'>\r\n    </div>\r\n</div>";
+var code = "<button disabled='true' id='fetchCryptoValue'>Fetch a cryptocurrency</button>";
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
+
+/***/ }),
+/* 18 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("button {\n  background-color: #f7931a;\n  border-radius: 25px;\n  border-style: none;\n  color: mintcream;\n  font-family: Georgia, serif;\n  font-size: 16px;\n  margin-top: 12px;\n  padding: 8px;\n}");
+
+/***/ }),
+/* 19 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Module
+var code = "<div class='container'>\r\n    <btc-img-component></btc-img-component>\r\n    <br>\r\n    <crypto-data-list-component></crypto-data-list-component>\r\n    <crypto-button-component></crypto-button-component>\r\n    <div id='cryptovalue' hidden='true'>\r\n    </div>\r\n</div>";
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);
 
@@ -1959,19 +2073,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _btc_img_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _crypto_data_list_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
-/* harmony import */ var _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
-/* harmony import */ var _services_style_loader_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
-/* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
-/* harmony import */ var _redux_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+/* harmony import */ var _crypto_button_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
+/* harmony import */ var _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(19);
+/* harmony import */ var _services_style_loader_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(10);
+/* harmony import */ var _redux_store__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5);
+/* harmony import */ var _redux_actions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4);
+
 
 
 
@@ -1983,47 +2090,15 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 class CryptoWebComponent extends HTMLElement {
     constructor() {
         super();
-        this.styleLoaderService = new _services_style_loader_service__WEBPACK_IMPORTED_MODULE_5__.StyleLoaderService();
-        this.formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
+        this.styleLoaderService = new _services_style_loader_service__WEBPACK_IMPORTED_MODULE_6__.StyleLoaderService();
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot.innerHTML = _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_4__["default"];
-        _redux_store__WEBPACK_IMPORTED_MODULE_6__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_7__.LoadCryptoWebTemplateAction.loadCryptoWebTemplateSuccess({ cryptoWebShadowRoot: this.shadowRoot }));
+        this.shadowRoot.innerHTML = _templates_crypto_web_component_html__WEBPACK_IMPORTED_MODULE_5__["default"];
+        _redux_store__WEBPACK_IMPORTED_MODULE_7__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_8__.LoadCryptoWebTemplateAction.loadCryptoWebTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(_styles_crypto_web_component_scss__WEBPACK_IMPORTED_MODULE_0__["default"], this.shadowRoot);
     }
     connectedCallback() {
-        this.shadowRoot.querySelector('#fetchCryptoValue')
-            .addEventListener('click', this.fetchCryptoCurrency.bind(this));
     }
     disconnectedCallback() {
-        this.shadowRoot.querySelector('#fetchCryptoValue')
-            .removeEventListener('click', this.fetchCryptoCurrency.bind(this));
-    }
-    fetchCryptoCurrency() {
-        return __awaiter(this, void 0, void 0, function* () {
-            _redux_store__WEBPACK_IMPORTED_MODULE_6__.CryptoStore.subscribe(() => __awaiter(this, void 0, void 0, function* () {
-                const state = _redux_store__WEBPACK_IMPORTED_MODULE_6__.CryptoStore.getState();
-                const uri = `https://api.exchange.coinbase.com/products/${state.selectedCryptoTicker}-usd/ticker`;
-                const response = yield fetch(uri, {
-                    method: 'GET'
-                }).then(data => data.json())
-                    .catch(err => console.log(err));
-                _redux_store__WEBPACK_IMPORTED_MODULE_6__.CryptoStore.dispatch(_redux_actions__WEBPACK_IMPORTED_MODULE_7__.CryptoTickerAction.loadCryptoTickerSuccess(response));
-                const div = this.shadowRoot.querySelector('#cryptovalue');
-                const para = document.createElement('p');
-                para.setAttribute('part', 'p');
-                para.innerHTML = response.message ?
-                    `There was an error fetching ${state.selectedCryptoTicker} from Coinbase.` :
-                    this.formatter.format(response.price * 100 / 100);
-                if (div.firstChild) {
-                    div.removeChild(div.firstChild);
-                }
-                div.appendChild(para);
-                div.hidden = false;
-            }));
-        });
     }
 }
 window.customElements.define('crypto-web-component', CryptoWebComponent);

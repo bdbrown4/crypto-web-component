@@ -1,7 +1,5 @@
 export class StyleLoaderService {
-    constructor() {
-
-    }
+    constructor() { }
 
     public loadStylesIntoShadowRoot(styleSheetText: string, shadowRoot: ShadowRoot): void {
         const styles = document.createElement('style');

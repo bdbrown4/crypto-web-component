@@ -10,7 +10,7 @@ export class BtcImgComponent extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
-        CryptoStore.dispatch(LoadBtcImgTemplateAction.loadBtcImgTemplateSuccess({ btcShadowRoot: this.shadowRoot }));
+        CryptoStore.dispatch(LoadBtcImgTemplateAction.loadBtcImgTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(btcStyles, this.shadowRoot);
     }
 

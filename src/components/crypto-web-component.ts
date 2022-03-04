@@ -15,7 +15,7 @@ export class CryptoWebComponent extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
-        CryptoStore.dispatch(LoadCryptoWebTemplateAction.loadCryptoWebTemplateSuccess({ cryptoWebShadowRoot: this.shadowRoot }));
+        CryptoStore.dispatch(LoadCryptoWebTemplateAction.loadCryptoWebTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
     }
 

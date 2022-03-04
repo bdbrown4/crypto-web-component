@@ -20,7 +20,7 @@ export class CryptoDataListComponent extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = template;
-        CryptoStore.dispatch(LoadCryptoDataListTemplateAction.loadCryptoDataListTemplateSuccess({ cryptoDataListShadowRoot: this.shadowRoot }));
+        CryptoStore.dispatch(LoadCryptoDataListTemplateAction.loadCryptoDataListTemplateSuccess({ componentShadowRoot: this.shadowRoot }));
         this.styleLoaderService.loadStylesIntoShadowRoot(cryptoStyles, this.shadowRoot);
         this.fetchDataListOptions();
     }
@@ -56,12 +56,12 @@ export class CryptoDataListComponent extends HTMLElement {
 
     private activateButton(): void {
         const state: State = CryptoStore.getState();
-        const div: HTMLDivElement = state.uiTemplateState.cryptoWebTemplate.cryptoWebShadowRoot.querySelector('#cryptovalue');
+        const div: HTMLDivElement = state.uiTemplateState.cryptoWebTemplate.componentShadowRoot.querySelector('#cryptovalue');
         div.innerHTML = '';
         div.hidden = true;
         const selection: HTMLInputElement = this.shadowRoot.querySelector('#cryptocurrency');
         this.setCryptoCurrencyValue = selection.value;
-        const button: HTMLButtonElement = state.uiTemplateState.cryptoButtonTemplate.cryptoButtonShadowRoot.querySelector('#fetchCryptoValue');
+        const button: HTMLButtonElement = state.uiTemplateState.cryptoButtonTemplate.componentShadowRoot.querySelector('#fetchCryptoValue');
         button.disabled = this.cryptoCurrency ? false : true;
     }
 }

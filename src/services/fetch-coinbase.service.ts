@@ -4,9 +4,7 @@ import { CryptoDataAction } from "../redux/actions";
 import { CryptoStore } from "../redux/store";
 
 export class FetchCoinbaseService {
-    constructor() {
-
-    }
+    constructor() { }
 
     async fetchCryptoDataList(uri: string): Promise<CryptoData[]> {
         return await fetch(uri, {

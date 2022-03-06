@@ -1,14 +1,22 @@
-.container {
-    background-color: antiquewhite;
-    border-radius: 25px;
-    text-align: center;
-    padding: 20px;
-    width: 30%;
+.crypto-container {
+  background-color: antiquewhite;
+  border-radius: 25px;
+  text-align: center;
+  padding: 20px;
+  width: clamp(260px, 100%, 500px);
+  box-sizing: border-box;
+}
+
+.form-container {
+  background-color: white;
+  padding: 16px 0;
+  border-radius: 25px;
+  margin-top: 16px;
 }
 
 p {
-    color: #f7931a;
-    font-family: Georgia, serif;
-    font-size: 24px;
-    text-align: center;
+  color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  text-align: center;
 }

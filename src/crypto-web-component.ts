@@ -143,23 +143,24 @@ export class CryptoWebComponent extends HTMLElement {
   // Arrow function class fields capture `this` and maintain a stable reference,
   // which is required for addEventListener/removeEventListener to work correctly.
   private _onInput = (event: Event): void => {
+    const isDatalistSelect = (event as InputEvent).inputType === '';
+    // Clear the datalist BEFORE normalising the input value. If we set
+    // input.value while the datalist still has options and the input has focus,
+    // the browser re-evaluates the datalist and immediately re-shows the dropdown.
+    if (isDatalistSelect) {
+      this._datalist.innerHTML = '';
+    }
     this._ticker = this._input.value.trim().toUpperCase();
     // Normalise display to uppercase so option values (lowercase) always differ
-    // from the input value — this guarantees the browser fires 'input' on the
-    // first datalist click regardless of whether the value appears to match.
+    // from the input value, guaranteeing 'input' fires on the first datalist click.
     this._input.value = this._ticker;
     this._button.disabled = this._ticker.length === 0;
     this._result.hidden = true;
     this._result.removeAttribute('data-error');
     this._result.textContent = '';
-    // When the user picks from the datalist the browser fires 'input' with an
-    // empty inputType (vs 'insertText' / 'deleteContentBackward' for keyboard).
-    // Dismiss suggestions immediately so the dropdown doesn't re-open.
-    if ((event as InputEvent).inputType === '') {
-      this._datalist.innerHTML = '';
-      return;
+    if (!isDatalistSelect) {
+      this._filterDatalist(this._ticker);
     }
-    this._filterDatalist(this._ticker);
   };
 
   // Dismiss suggestions when focus leaves the input and a valid ticker is present

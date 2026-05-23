@@ -144,6 +144,10 @@ export class CryptoWebComponent extends HTMLElement {
   // which is required for addEventListener/removeEventListener to work correctly.
   private _onInput = (event: Event): void => {
     this._ticker = this._input.value.trim().toUpperCase();
+    // Normalise display to uppercase so option values (lowercase) always differ
+    // from the input value — this guarantees the browser fires 'input' on the
+    // first datalist click regardless of whether the value appears to match.
+    this._input.value = this._ticker;
     this._button.disabled = this._ticker.length === 0;
     this._result.hidden = true;
     this._result.removeAttribute('data-error');
@@ -203,16 +207,14 @@ export class CryptoWebComponent extends HTMLElement {
   }
 
   // Caps suggestions at 15 results to keep the dropdown usable.
-  // The exact-match entry is intentionally excluded: when the user has already
-  // typed a complete ticker (e.g. "ETH"), clicking that same option in the datalist
-  // fires no browser event (value unchanged), causing a double-click requirement.
-  // Excluding it avoids that; the user simply clicks Fetch when the ticker is complete.
+  // Option values are stored lowercase so they always differ from the uppercased
+  // input value — this ensures the browser fires 'input' on the first datalist
+  // click even when the user has typed an exact ticker match.
   private _filterDatalist(query: string): void {
     const q = query.toLowerCase();
     const matches = q
       ? this._currencies
-          .filter(c => c.id.toLowerCase() !== q &&
-            (c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q)))
+          .filter(c => c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q))
           .slice(0, 15)
       : [];
 
@@ -222,7 +224,7 @@ export class CryptoWebComponent extends HTMLElement {
     const frag = document.createDocumentFragment();
     for (const { id, name } of matches) {
       const opt = document.createElement('option');
-      opt.value = id;
+      opt.value = id.toLowerCase(); // lowercase so it always differs from the uppercase input
       opt.label = `${name} \u2013 ${id}`;
       frag.appendChild(opt);
     }

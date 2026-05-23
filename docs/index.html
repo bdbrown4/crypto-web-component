@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>crypto-web-component — Docs</title>
+  <meta name="description" content="A self-contained, zero-dependency custom element that fetches live cryptocurrency prices via the Coinbase API.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #f7931a;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --error: #f85149;
+      --green: #3fb950;
+      --purple: #6c63ff;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 16px; font-weight: 600; color: var(--text); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 1100px; margin: 0 auto; padding: 80px 32px 64px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    @media (max-width: 720px) {
+      .hero { grid-template-columns: 1fr; padding: 40px 20px; gap: 40px; }
+      .hero-demo { order: -1; }
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(247,147,26,.1); color: var(--accent);
+      border: 1px solid rgba(247,147,26,.3); border-radius: 20px;
+      padding: 3px 12px; font-size: 11px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    h1 { font-size: clamp(28px,4vw,44px); font-weight: 700; line-height: 1.2; color: #fff; margin-bottom: 16px; }
+    h1 span { color: var(--accent); }
+    .hero-sub { color: var(--muted); font-size: 17px; line-height: 1.75; margin-bottom: 28px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .chip {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 3px 10px;
+      font-size: 12px; font-family: var(--mono); color: var(--muted);
+    }
+    .chip.green { color: var(--green); border-color: rgba(63,185,80,.3); background: rgba(63,185,80,.08); }
+    .install-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 16px;
+      font-family: var(--mono); font-size: 14px;
+    }
+    .install-row span { color: var(--muted); }
+    .install-row code { color: var(--text); flex: 1; }
+    .hero-demo { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .demo-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+    /* ── Sections ── */
+    .section { max-width: 880px; margin: 0 auto; padding: 64px 32px; border-top: 1px solid var(--border); }
+    @media (max-width: 720px) { .section { padding: 40px 20px; } }
+    h2 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .section-sub { color: var(--muted); margin-bottom: 32px; font-size: 16px; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 28px 0 10px; }
+    p { color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+
+    /* ── Code blocks ── */
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 12px 0 20px; }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--surface2);
+    }
+    .code-lang { font-size: 12px; font-family: var(--mono); color: var(--muted); }
+    pre { padding: 20px; overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.7; color: var(--text); tab-size: 2; }
+
+    /* Syntax colours */
+    .kw  { color: #ff7b72; }
+    .str { color: #a5d6ff; }
+    .tag { color: #7ee787; }
+    .attr{ color: #79c0ff; }
+    .val { color: #a5d6ff; }
+    .cmt { color: #8b949e; font-style: italic; }
+    .sel { color: #d2a8ff; }
+    .prop{ color: #79c0ff; }
+    .num { color: #f2cc60; }
+
+    /* ── Buttons ── */
+    .copy-btn {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); cursor: pointer; padding: 3px 9px;
+      font-size: 12px; font-family: var(--font); transition: all .15s; white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent); }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+    /* ── Tabs ── */
+    .tabs { margin: 16px 0; }
+    .tab-list { display: flex; gap: 0; border-bottom: 1px solid var(--border); list-style: none; flex-wrap: wrap; }
+    .tab-btn {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      padding: 9px 18px; font-size: 14px; font-family: var(--font);
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 20px 0; }
+    th { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--muted); }
+    td:first-child { color: var(--text); }
+    td code { font-family: var(--mono); font-size: 13px; color: var(--accent); background: rgba(247,147,26,.1); border-radius: 4px; padding: 2px 6px; }
+    .compat td:nth-child(2), .compat td:nth-child(3),
+    .compat td:nth-child(4), .compat td:nth-child(5) { color: var(--green); }
+
+    /* ── Alert ── */
+    .alert {
+      display: flex; gap: 12px;
+      background: rgba(247,147,26,.07); border: 1px solid rgba(247,147,26,.2);
+      border-radius: 8px; padding: 14px 16px;
+      font-size: 14px; color: var(--muted); margin: 16px 0;
+    }
+    .alert-icon { flex-shrink: 0; font-style: normal; }
+    .alert a { color: var(--accent); }
+    .alert code { font-family: var(--mono); color: var(--text); }
+
+    /* ── Theme demos ── */
+    .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 24px; margin: 24px 0; }
+    .theme-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .theme-name { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── Footer ── */
+    footer { border-top: 1px solid var(--border); padding: 40px 32px; text-align: center; color: var(--muted); font-size: 14px; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer p + p { margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a class="nav-brand" href="#">
+    <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="32" fill="#f7931a"/>
+      <path fill="#fff" d="M46.1 27.4c.6-4-2.5-6.2-6.7-7.6l1.4-5.5-3.3-.8-1.3 5.3c-.9-.2-1.8-.4-2.7-.6l1.3-5.4-3.3-.8-1.4 5.5c-.7-.2-1.4-.3-2.1-.5l-4.5-1.1-.9 3.5s2.5.6 2.4.6c1.3.3 1.6 1.1 1.5 1.8l-1.5 6.1c.1 0 .2.1.3.1-.1 0-.2-.1-.3-.1l-2.2 8.6c-.2.4-.6 1-1.5.8 0 .1-2.4-.6-2.4-.6l-1.7 3.8 4.3 1.1 2.4.6-1.4 5.6 3.3.8 1.4-5.5c.9.2 1.8.5 2.7.7l-1.4 5.5 3.3.8 1.4-5.6c5.6 1.1 9.8.6 11.6-4.4 1.4-4-.1-6.3-3-7.8 2.1-.5 3.7-1.9 4.1-4.9zm-7.4 10.4c-1 4-7.8 1.8-10 1.3l1.8-7.1c2.2.6 9.3 1.6 8.2 5.8zm1-10.5c-.9 3.7-6.6 1.8-8.5 1.4l1.6-6.4c1.9.5 7.9 1.3 6.9 5z"/>
+    </svg>
+    crypto-web-component
+  </a>
+  <ul class="nav-links">
+    <li><a href="#quickstart">Quick Start</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#theming">Theming</a></li>
+    <li><a href="https://github.com/bdbrown4/crypto-web-component" target="_blank" rel="noopener">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div>
+    <div class="badge">
+      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#f7931a"/></svg>
+      Custom Element · Zero Dependencies
+    </div>
+    <h1>Live crypto prices<br>in <span>one tag</span></h1>
+    <p class="hero-sub">
+      A self-contained Web Component that fetches real-time cryptocurrency prices
+      via the Coinbase API. Drop a single
+      <code style="color:var(--accent);font-family:var(--mono)">&lt;crypto-web-component&gt;</code>
+      into any framework — or none at all.
+    </p>
+    <div class="chips">
+      <span class="chip green">~5 KB minified</span>
+      <span class="chip">Zero runtime deps</span>
+      <span class="chip">Shadow DOM</span>
+      <span class="chip">CSS Parts API</span>
+      <span class="chip">TypeScript</span>
+    </div>
+    <div class="install-row">
+      <span>$</span>
+      <code>npm install @bdbrown4/crypto-web-component</code>
+      <button class="copy-btn" onclick="copyText(this, 'npm install @bdbrown4/crypto-web-component')">Copy</button>
+    </div>
+  </div>
+  <div class="hero-demo">
+    <span class="demo-label">Live demo ↓ try it</span>
+    <crypto-web-component></crypto-web-component>
+  </div>
+</div>
+
+<!-- ── Quick Start ── -->
+<section id="quickstart" class="section">
+  <h2>Quick Start</h2>
+  <p class="section-sub">No build tools required — works with a plain script tag.</p>
+
+  <h3>Option A — CDN (no install)</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">html</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="cmt">&lt;!-- 1. Load the script (once, anywhere in your HTML) --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://unpkg.com/@bdbrown4/crypto-web-component/dist/crypto-web-component.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="cmt">&lt;!-- 2. Use the tag --&gt;</span>
+<span class="tag">&lt;crypto-web-component&gt;&lt;/crypto-web-component&gt;</span></pre>
+  </div>
+
+  <h3>Option B — npm + bundler</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">sh</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre>npm install @bdbrown4/crypto-web-component</pre>
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js / ts — entry file</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="cmt">// Import once — registers the element globally for the entire app</span>
+<span class="kw">import</span> <span class="str">'@bdbrown4/crypto-web-component'</span><span class="kw">;</span></pre>
+  </div>
+
+  <div class="alert">
+    <em class="alert-icon">⚡</em>
+    <span>
+      The import side-effect calls <code>customElements.define()</code> once and the element is
+      available everywhere in your app from that point on — no props, no wiring, no context needed.
+    </span>
+  </div>
+</section>
+
+<!-- ── Framework Usage ── -->
+<section id="usage" class="section">
+  <h2>Framework Integration</h2>
+  <p class="section-sub">Web Components are a browser standard — they work natively in every major framework.</p>
+
+  <div class="tabs">
+    <ul class="tab-list" role="tablist">
+      <li><button class="tab-btn active" role="tab" onclick="switchTab(event,'vanilla')">Vanilla HTML</button></li>
+      <li><button class="tab-btn" role="tab" onclick="switchTab(event,'react')">React</button></li>
+      <li><button class="tab-btn" role="tab" onclick="switchTab(event,'vue')">Vue 3</button></li>
+      <li><button class="tab-btn" role="tab" onclick="switchTab(event,'angular')">Angular</button></li>
+    </ul>
+
+    <!-- Vanilla -->
+    <div id="tab-vanilla" class="tab-panel active">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">html</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>My App<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;crypto-web-component&gt;&lt;/crypto-web-component&gt;</span>
+
+  <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://unpkg.com/@bdbrown4/crypto-web-component/dist/crypto-web-component.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- React -->
+    <div id="tab-react" class="tab-panel">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">ts — src/main.tsx</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="cmt">// Register once in your entry file — before React renders</span>
+<span class="kw">import</span> <span class="str">'@bdbrown4/crypto-web-component'</span><span class="kw">;</span>
+<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span><span class="kw">;</span>
+<span class="kw">import</span> { createRoot } <span class="kw">from</span> <span class="str">'react-dom/client'</span><span class="kw">;</span>
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span><span class="kw">;</span>
+
+createRoot(document.getElementById(<span class="str">'root'</span>)!).render(<span class="tag">&lt;App /&gt;</span>);</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">tsx — src/App.tsx</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="kw">export default function</span> <span class="tag">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="cmt">{/* JSX accepts any valid HTML element name */}</span>
+      <span class="tag">&lt;crypto-web-component&gt;&lt;/crypto-web-component&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</pre>
+      </div>
+      <div class="alert">
+        <em class="alert-icon">ℹ️</em>
+        <span>
+          If TypeScript raises <em>"Property does not exist on type JSX.IntrinsicElements"</em>,
+          add a declaration to a <code>*.d.ts</code> file in your project:
+          <br><br>
+          <code>declare namespace JSX {<br>&nbsp;&nbsp;interface IntrinsicElements {<br>&nbsp;&nbsp;&nbsp;&nbsp;'crypto-web-component': React.HTMLAttributes&lt;HTMLElement&gt;;<br>&nbsp;&nbsp;}<br>}</code>
+        </span>
+      </div>
+    </div>
+
+    <!-- Vue -->
+    <div id="tab-vue" class="tab-panel">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">ts — src/main.ts</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="kw">import</span> { createApp } <span class="kw">from</span> <span class="str">'vue'</span><span class="kw">;</span>
+<span class="kw">import</span> <span class="str">'@bdbrown4/crypto-web-component'</span><span class="kw">;</span>
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App.vue'</span><span class="kw">;</span>
+
+<span class="kw">const</span> app = createApp(App);
+<span class="cmt">// Tell Vue's compiler to treat hyphenated tags as custom elements</span>
+app.config.compilerOptions.isCustomElement = (tag) => tag.includes(<span class="str">'-'</span>);
+app.mount(<span class="str">'#app'</span>);</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">vue — src/App.vue</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;crypto-web-component&gt;&lt;/crypto-web-component&gt;</span>
+<span class="tag">&lt;/template&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- Angular -->
+    <div id="tab-angular" class="tab-panel">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">ts — app.module.ts</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="kw">import</span> { NgModule, CUSTOM_ELEMENTS_SCHEMA } <span class="kw">from</span> <span class="str">'@angular/core'</span><span class="kw">;</span>
+<span class="kw">import</span> <span class="str">'@bdbrown4/crypto-web-component'</span><span class="kw">;</span>
+
+<span class="attr">@NgModule</span>({
+  <span class="cmt">// CUSTOM_ELEMENTS_SCHEMA tells Angular to allow unknown element names</span>
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+<span class="kw">export class</span> <span class="tag">AppModule</span> {}</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">html — app.component.html</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="tag">&lt;crypto-web-component&gt;&lt;/crypto-web-component&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Theming ── -->
+<section id="theming" class="section">
+  <h2>Theming</h2>
+  <p class="section-sub">
+    Two complementary APIs let you fully control the component's appearance from outside its shadow DOM.
+  </p>
+
+  <h3>CSS Custom Properties — colors &amp; backgrounds</h3>
+  <p>CSS custom properties pierce the shadow DOM. Use these tokens to set background and text colors
+  consistently — the floating input label will automatically match its parent panel.</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Default</th><th>Controls</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--cwc-container-bg</code></td><td><code>antiquewhite</code></td><td>Outer card background</td></tr>
+      <tr><td><code>--cwc-form-bg</code></td><td><code>#fff</code></td><td>Inner panel + input + floating label background</td></tr>
+      <tr><td><code>--cwc-input-color</code></td><td><code>#333</code></td><td>Input text and floating label text color</td></tr>
+      <tr><td><code>--cwc-border-color</code></td><td><code>#ccc</code></td><td>Input border color (unfocused)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Parts — structure &amp; layout</h3>
+  <p>Use
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::part" target="_blank" rel="noopener" style="color:var(--accent)"><code style="font-family:var(--mono)">::part()</code></a>
+    for border-radius, padding, box-shadow, and other structural properties.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Part name</th><th>Element</th><th>What to target</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>container</code></td><td><code>&lt;div&gt;</code></td><td>Outer card — border, border-radius, box-shadow</td></tr>
+      <tr><td><code>form</code></td><td><code>&lt;div&gt;</code></td><td>Inner panel — border-radius, padding</td></tr>
+      <tr><td><code>input</code></td><td><code>&lt;input&gt;</code></td><td>Input field — width, border-radius</td></tr>
+      <tr><td><code>button</code></td><td><code>&lt;button&gt;</code></td><td>"Fetch USD Value" button — background, border-radius, font-weight</td></tr>
+      <tr><td><code>result</code></td><td><code>&lt;p&gt;</code></td><td>Displayed price or error message — color, font-size</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dark / Purple theme — example</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">css</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="cmt">/* CSS custom properties handle background + text colors */</span>
+<span class="sel">crypto-web-component#dark</span> {
+  <span class="prop">--cwc-container-bg</span>: <span class="num">#1a1d2e</span>;
+  <span class="prop">--cwc-form-bg</span>:      <span class="num">#12141f</span>;
+  <span class="prop">--cwc-input-color</span>:  <span class="num">#e6edf3</span>;
+  <span class="prop">--cwc-border-color</span>: <span class="num">#2e3250</span>;
+}
+
+<span class="cmt">/* CSS Parts handle structural + accent overrides */</span>
+<span class="sel">crypto-web-component#dark::part(container)</span> {
+  <span class="prop">border</span>: <span class="num">1px</span> solid <span class="num">#2e3250</span>;
+}
+<span class="sel">crypto-web-component#dark::part(button)</span> {
+  <span class="prop">background</span>: <span class="num">#6c63ff</span>;
+}
+<span class="sel">crypto-web-component#dark::part(result)</span> {
+  <span class="prop">color</span>: <span class="num">#6c63ff</span>;
+}</pre>
+  </div>
+
+  <h3>Live themed demos</h3>
+  <div class="theme-grid">
+    <div class="theme-card">
+      <span class="theme-name">Default</span>
+      <crypto-web-component id="d1"></crypto-web-component>
+    </div>
+    <div class="theme-card">
+      <span class="theme-name">Dark / Purple</span>
+      <crypto-web-component id="d2"></crypto-web-component>
+    </div>
+    <div class="theme-card">
+      <span class="theme-name">Minimal / Green</span>
+      <crypto-web-component id="d3"></crypto-web-component>
+    </div>
+  </div>
+</section>
+
+<!-- ── Browser Compat ── -->
+<section id="compat" class="section">
+  <h2>Browser Compatibility</h2>
+  <p class="section-sub">Built entirely on standards-track browser APIs — no polyfills required.</p>
+
+  <table class="compat">
+    <thead>
+      <tr><th>API</th><th>Chrome</th><th>Firefox</th><th>Safari</th><th>Edge</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Custom Elements v1</td><td>67+</td><td>63+</td><td>10.1+</td><td>79+</td></tr>
+      <tr><td>Shadow DOM v1</td><td>53+</td><td>63+</td><td>10.1+</td><td>79+</td></tr>
+      <tr><td>CSS <code>::part()</code></td><td>73+</td><td>72+</td><td>13.1+</td><td>79+</td></tr>
+      <tr><td>Fetch + async/await</td><td>66+</td><td>57+</td><td>11.1+</td><td>79+</td></tr>
+      <tr><td>Intl.NumberFormat</td><td>All</td><td>All</td><td>All</td><td>All</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert">
+    <em class="alert-icon">🌐</em>
+    <span>
+      Price data is sourced from the public
+      <a href="https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproductticker" target="_blank" rel="noopener">Coinbase Exchange REST API</a>
+      — no API key required.
+    </span>
+  </div>
+</section>
+
+<!-- ── Development ── -->
+<section id="dev" class="section">
+  <h2>Development</h2>
+  <p class="section-sub">The entire component lives in a single TypeScript file with no runtime dependencies.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">sh</span><button class="copy-btn" onclick="copyBlock(this)">Copy</button></div>
+<pre><span class="cmt"># Clone and install dev tools</span>
+git clone https://github.com/bdbrown4/crypto-web-component.git
+cd crypto-web-component
+npm install
+
+<span class="cmt"># Start dev server with HMR at http://localhost:8080</span>
+npm start
+
+<span class="cmt"># Run tests (jest + happy-dom)</span>
+npm test
+
+<span class="cmt"># Production build → dist/crypto-web-component.js</span>
+npm run build</pre>
+  </div>
+
+  <h3>Project structure</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">text</span></div>
+<pre>crypto-web-component/
+├── src/
+│   ├── crypto-web-component.ts   <span class="cmt"># entire component — one file</span>
+│   └── tests/
+│       └── test.spec.ts
+├── dist/
+│   └── crypto-web-component.js  <span class="cmt"># built output (~5 KB minified)</span>
+├── docs/                        <span class="cmt"># GitHub Pages source</span>
+│   └── index.html
+├── webpack.config.js
+├── tsconfig.json
+└── package.json</pre>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>Built by <a href="https://github.com/bdbrown4" target="_blank" rel="noopener">@bdbrown4</a> &nbsp;·&nbsp; <a href="https://github.com/bdbrown4/crypto-web-component" target="_blank" rel="noopener">View on GitHub</a> &nbsp;·&nbsp; MIT License</p>
+  <p>Price data via <a href="https://docs.cdp.coinbase.com/exchange/reference/exchangerestapi_getproductticker" target="_blank" rel="noopener">Coinbase Exchange API</a></p>
+</footer>
+
+<!-- ── Theming overrides (demo) ── -->
+<style>
+  #d2 {
+    --cwc-container-bg: #1a1d2e;
+    --cwc-form-bg:      #12141f;
+    --cwc-input-color:  #e6edf3;
+    --cwc-border-color: #2e3250;
+  }
+  #d2::part(container) { border: 1px solid #2e3250; }
+  #d2::part(button)    { background: #6c63ff; }
+  #d2::part(result)    { color: #6c63ff; }
+
+  #d3 {
+    --cwc-container-bg: #0d1f17;
+    --cwc-form-bg:      #071209;
+    --cwc-input-color:  #b7e4c7;
+    --cwc-border-color: #1a4731;
+  }
+  #d3::part(container) { border: 1px solid #1a4731; border-radius: 8px; }
+  #d3::part(button)    { background: #22c55e; border-radius: 6px; color: #000; font-weight: 900; }
+  #d3::part(result)    { color: #22c55e; }
+</style>
+
+<script>
+  function switchTab(event, id) {
+    const tabs = event.target.closest('.tabs');
+    tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    tabs.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    tabs.querySelector('#tab-' + id).classList.add('active');
+  }
+
+  function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+
+  function copyBlock(btn) {
+    const text = btn.closest('.code-block').querySelector('pre').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+</script>
+
+<!-- Component script — loaded last so it doesn't block render -->
+<script src="./crypto-web-component.js"></script>
+</body>
+</html>

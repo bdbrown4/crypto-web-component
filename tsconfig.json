@@ -1,12 +1,15 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "target": "es2015",
-      "allowJs": true,
-      "moduleResolution": "node",
-      "esModuleInterop": true,
-      "sourceMap": true
-    }
-  }
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "sourceMap": true
+  },
+  "include": ["src/crypto-web-component.ts", "src/tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

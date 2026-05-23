@@ -1,59 +1,30 @@
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
-  mode: "none",
-  entry: "./src/components/crypto-web-component.ts",
+  mode: 'production',
+  entry: './src/crypto-web-component.ts',
   output: {
-    path: __dirname + '/dist',
-    filename: "crypto-web-component.js"
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'crypto-web-component.js',
   },
   devServer: {
-    static: path.join(__dirname, 'dist')
+    static: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: [".js", ".ts"],
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
       {
-        test: /\.(s(a|c)ss)$/,
-        use: ['raw-loader', {
-          loader:'sass-loader',
-          options: { 
-            sassOptions:{
-              includePaths: [path.resolve(__dirname, 'node_modules')]
-            }
-          }
-        }
-      ]
-      },
-      {
-        test: /\.html$/i,
-        loader: "html-loader",
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [
-              "@babel/preset-env",
-            ]
-          }
-        }
-      },
-      {
         test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          // Only transpile files in the bundle; skip full project type-check.
+          // Run `tsc --noEmit` separately for a full type check.
+          transpileOnly: true,
+        },
+      },
+    ],
   },
-  plugins:[
-    // needed to ignore the process check in the redux lib
-    new webpack.DefinePlugin({
-        process: {env: {}}
-    })
-  ]
-}
+};

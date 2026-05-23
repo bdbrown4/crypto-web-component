@@ -1,11 +1,11 @@
 {
   "name": "@bdbrown4/crypto-web-component",
-  "version": "3.0.2",
-  "description": "This is a custom web component that allows for you to search for a crypto currency and fetch it's current USD value.",
-  "main": "crypto-web-component.ts",
+  "version": "4.0.0",
+  "description": "A self-contained custom web component that searches for a cryptocurrency and fetches its current USD value.",
+  "main": "dist/crypto-web-component.js",
   "scripts": {
-    "test": "jest --env=@happy-dom/jest-environment",
-    "build": "webpack",
+    "test": "jest",
+    "build": "webpack && node -e \"require('fs').copyFileSync('dist/crypto-web-component.js','docs/crypto-web-component.js')\"",
     "start": "webpack serve"
   },
   "repository": {
@@ -14,7 +14,8 @@
   },
   "keywords": [
     "crypto",
-    "webcomponent"
+    "webcomponent",
+    "custom-element"
   ],
   "author": "Benjamin D. Brown",
   "license": "MIT",
@@ -23,25 +24,10 @@
   },
   "homepage": "https://github.com/bdbrown4/crypto-web-component#readme",
   "devDependencies": {
-    "@babel/core": "^7.16.12",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.16.7",
     "@happy-dom/jest-environment": "^2.25.1",
     "@types/jest": "^27.4.0",
-    "@types/redux": "^3.6.0",
-    "@types/webpack-env": "^1.16.3",
-    "babel-jest": "^27.4.6",
-    "babel-loader": "^8.2.3",
-    "html-loader": "^3.1.0",
-    "html-loader-jest": "^0.2.1",
     "jest": "^27.4.5",
-    "jest-css-modules": "^2.1.0",
     "jest-fetch-mock": "^3.0.3",
-    "node-sass": "^7.0.1",
-    "raw-loader": "^4.0.2",
-    "redux": "^4.1.2",
-    "regenerator-runtime": "^0.13.9",
-    "sass-loader": "^12.4.0",
     "ts-jest": "^27.1.3",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",

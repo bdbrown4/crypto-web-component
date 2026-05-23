@@ -1,11 +1,9 @@
 module.exports = {
-    moduleNameMapper: {
-      "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules"
+  testEnvironment: '@happy-dom/jest-environment',
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: { module: 'CommonJS' },
     },
-    preset: 'ts-jest',
-    transform: {
-      '^.+\\.(ts|tsx)?$': 'ts-jest',
-      "^.+\\.(js|jsx)$": "babel-jest",
-      "^.+\\.html$": "html-loader-jest"
-    },
-  };
+  },
+};

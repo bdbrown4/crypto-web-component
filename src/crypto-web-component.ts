@@ -68,6 +68,30 @@ TEMPLATE.innerHTML = `<style>
     transition: border-color 0.15s;
   }
   input:focus { border-color: #f7931a; }
+  #suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 100%;
+    z-index: 100;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    background: var(--_form-bg);
+    border: 1.5px solid var(--_border-color);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+  #suggestions li {
+    padding: 7px 14px;
+    cursor: pointer;
+    color: var(--_input-color);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  #suggestions li:hover { background: var(--_border-color); }
   button {
     background: #f7931a;
     border: none;
@@ -100,8 +124,8 @@ TEMPLATE.innerHTML = `<style>
   <div class="form" part="form">
     <div class="field">
       <label for="crypto-input">Cryptocurrency</label>
-      <input id="crypto-input" list="crypto-list" autocomplete="off" part="input">
-      <datalist id="crypto-list"></datalist>
+      <input id="crypto-input" autocomplete="off" part="input" aria-autocomplete="list" aria-haspopup="listbox">
+      <ul id="suggestions" hidden role="listbox" part="suggestions"></ul>
     </div>
     <button id="fetch-btn" disabled part="button">Fetch USD Value</button>
     <p id="result" hidden part="result" role="status"></p>
@@ -115,7 +139,7 @@ export class CryptoWebComponent extends HTMLElement {
   private _input!: HTMLInputElement;
   private _button!: HTMLButtonElement;
   private _result!: HTMLParagraphElement;
-  private _datalist!: HTMLElement;
+  private _suggestions!: HTMLUListElement;
 
   constructor() {
     super();
@@ -124,7 +148,7 @@ export class CryptoWebComponent extends HTMLElement {
     this._input = root.querySelector<HTMLInputElement>('#crypto-input')!;
     this._button = root.querySelector<HTMLButtonElement>('#fetch-btn')!;
     this._result = root.querySelector<HTMLParagraphElement>('#result')!;
-    this._datalist = root.querySelector<HTMLElement>('#crypto-list')!;
+    this._suggestions = root.querySelector<HTMLUListElement>('#suggestions')!;
   }
 
   connectedCallback(): void {
@@ -142,33 +166,24 @@ export class CryptoWebComponent extends HTMLElement {
 
   // Arrow function class fields capture `this` and maintain a stable reference,
   // which is required for addEventListener/removeEventListener to work correctly.
-  private _onInput = (event: Event): void => {
-    const isDatalistSelect = (event as InputEvent).inputType === '';
-    // Clear the datalist BEFORE normalising the input value. If we set
-    // input.value while the datalist still has options and the input has focus,
-    // the browser re-evaluates the datalist and immediately re-shows the dropdown.
-    if (isDatalistSelect) {
-      this._datalist.innerHTML = '';
-    }
+  private _onInput = (): void => {
     this._ticker = this._input.value.trim().toUpperCase();
-    // Normalise display to uppercase so option values (lowercase) always differ
-    // from the input value, guaranteeing 'input' fires on the first datalist click.
     this._input.value = this._ticker;
     this._button.disabled = this._ticker.length === 0;
     this._result.hidden = true;
     this._result.removeAttribute('data-error');
     this._result.textContent = '';
-    if (!isDatalistSelect) {
-      this._filterDatalist(this._ticker);
-    }
+    this._filterSuggestions(this._ticker);
   };
 
-  // Dismiss suggestions when focus leaves the input and a valid ticker is present
-  // (covers the tab-to-button case).
+  // Hide suggestions when the input loses focus. The 150 ms delay lets a
+  // mousedown on a suggestion row fire first (mousedown precedes blur), so the
+  // selection handler runs before we clear the list.
   private _onBlur = (): void => {
-    if (this._ticker && this._currencies.some(c => c.id === this._ticker)) {
-      this._datalist.innerHTML = '';
-    }
+    setTimeout(() => {
+      this._suggestions.hidden = true;
+      this._suggestions.innerHTML = '';
+    }, 150);
   };
 
   private _onFetch = async (): Promise<void> => {
@@ -208,10 +223,7 @@ export class CryptoWebComponent extends HTMLElement {
   }
 
   // Caps suggestions at 15 results to keep the dropdown usable.
-  // Option values are stored lowercase so they always differ from the uppercased
-  // input value — this ensures the browser fires 'input' on the first datalist
-  // click even when the user has typed an exact ticker match.
-  private _filterDatalist(query: string): void {
+  private _filterSuggestions(query: string): void {
     const q = query.toLowerCase();
     const matches = q
       ? this._currencies
@@ -219,17 +231,31 @@ export class CryptoWebComponent extends HTMLElement {
           .slice(0, 15)
       : [];
 
-    this._datalist.innerHTML = '';
-    if (matches.length === 0) return;
+    this._suggestions.innerHTML = '';
+    if (matches.length === 0) {
+      this._suggestions.hidden = true;
+      return;
+    }
 
     const frag = document.createDocumentFragment();
     for (const { id, name } of matches) {
-      const opt = document.createElement('option');
-      opt.value = id.toLowerCase(); // lowercase so it always differs from the uppercase input
-      opt.label = `${name} \u2013 ${id}`;
-      frag.appendChild(opt);
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.textContent = `${name} \u2013 ${id}`;
+      // mousedown fires before blur; preventDefault keeps focus in the input
+      // so blur never fires and we can update the ticker immediately.
+      li.addEventListener('mousedown', (e: MouseEvent) => {
+        e.preventDefault();
+        this._ticker = id;
+        this._input.value = id;
+        this._button.disabled = false;
+        this._suggestions.hidden = true;
+        this._suggestions.innerHTML = '';
+      });
+      frag.appendChild(li);
     }
-    this._datalist.appendChild(frag);
+    this._suggestions.appendChild(frag);
+    this._suggestions.hidden = false;
   }
 }
 

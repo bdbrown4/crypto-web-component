@@ -39,14 +39,14 @@ describe('CryptoWebComponent', () => {
     expect(button!.hasAttribute('disabled')).toBe(true);
   });
 
-  it('populates the datalist with filtered results after typing', async () => {
+  it('populates the suggestions list with filtered results after typing', async () => {
     await flushPromises(); // let _loadCurrencies settle
     const input = el.shadowRoot!.querySelector<HTMLInputElement>('input')!;
-    const datalist = el.shadowRoot!.querySelector('datalist')!;
+    const suggestions = el.shadowRoot!.querySelector<HTMLUListElement>('#suggestions')!;
     input.value = 'B';
     input.dispatchEvent(new Event('input'));
-    expect(datalist.children.length).toBeGreaterThan(0);
-    expect(datalist.children.length).toBeLessThanOrEqual(15);
+    expect(suggestions.children.length).toBeGreaterThan(0);
+    expect(suggestions.children.length).toBeLessThanOrEqual(15);
   });
 
   it('enables the button when the input has a value', () => {

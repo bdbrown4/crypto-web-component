@@ -203,11 +203,16 @@ export class CryptoWebComponent extends HTMLElement {
   }
 
   // Caps suggestions at 15 results to keep the dropdown usable.
+  // The exact-match entry is intentionally excluded: when the user has already
+  // typed a complete ticker (e.g. "ETH"), clicking that same option in the datalist
+  // fires no browser event (value unchanged), causing a double-click requirement.
+  // Excluding it avoids that; the user simply clicks Fetch when the ticker is complete.
   private _filterDatalist(query: string): void {
     const q = query.toLowerCase();
     const matches = q
       ? this._currencies
-          .filter(c => c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q))
+          .filter(c => c.id.toLowerCase() !== q &&
+            (c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q)))
           .slice(0, 15)
       : [];
 

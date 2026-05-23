@@ -129,24 +129,41 @@ export class CryptoWebComponent extends HTMLElement {
 
   connectedCallback(): void {
     this._input.addEventListener('input', this._onInput);
+    this._input.addEventListener('blur', this._onBlur);
     this._button.addEventListener('click', this._onFetch);
     this._loadCurrencies();
   }
 
   disconnectedCallback(): void {
     this._input.removeEventListener('input', this._onInput);
+    this._input.removeEventListener('blur', this._onBlur);
     this._button.removeEventListener('click', this._onFetch);
   }
 
   // Arrow function class fields capture `this` and maintain a stable reference,
   // which is required for addEventListener/removeEventListener to work correctly.
-  private _onInput = (): void => {
+  private _onInput = (event: Event): void => {
     this._ticker = this._input.value.trim().toUpperCase();
     this._button.disabled = this._ticker.length === 0;
     this._result.hidden = true;
     this._result.removeAttribute('data-error');
     this._result.textContent = '';
+    // When the user picks from the datalist the browser fires 'input' with an
+    // empty inputType (vs 'insertText' / 'deleteContentBackward' for keyboard).
+    // Dismiss suggestions immediately so the dropdown doesn't re-open.
+    if ((event as InputEvent).inputType === '') {
+      this._datalist.innerHTML = '';
+      return;
+    }
     this._filterDatalist(this._ticker);
+  };
+
+  // Dismiss suggestions when focus leaves the input and a valid ticker is present
+  // (covers the tab-to-button case).
+  private _onBlur = (): void => {
+    if (this._ticker && this._currencies.some(c => c.id === this._ticker)) {
+      this._datalist.innerHTML = '';
+    }
   };
 
   private _onFetch = async (): Promise<void> => {
@@ -188,12 +205,6 @@ export class CryptoWebComponent extends HTMLElement {
   // Caps suggestions at 15 results to keep the dropdown usable.
   private _filterDatalist(query: string): void {
     const q = query.toLowerCase();
-    // Exact match means the user just selected from the datalist (or typed a full ticker).
-    // Clear suggestions so the dropdown doesn't re-open after selection.
-    if (q && this._currencies.some(c => c.id.toLowerCase() === q)) {
-      this._datalist.innerHTML = '';
-      return;
-    }
     const matches = q
       ? this._currencies
           .filter(c => c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q))

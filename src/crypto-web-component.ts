@@ -188,6 +188,12 @@ export class CryptoWebComponent extends HTMLElement {
   // Caps suggestions at 15 results to keep the dropdown usable.
   private _filterDatalist(query: string): void {
     const q = query.toLowerCase();
+    // Exact match means the user just selected from the datalist (or typed a full ticker).
+    // Clear suggestions so the dropdown doesn't re-open after selection.
+    if (q && this._currencies.some(c => c.id.toLowerCase() === q)) {
+      this._datalist.innerHTML = '';
+      return;
+    }
     const matches = q
       ? this._currencies
           .filter(c => c.id.toLowerCase().startsWith(q) || c.name.toLowerCase().startsWith(q))
